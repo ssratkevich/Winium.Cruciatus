@@ -3,6 +3,7 @@
     #region using
 
     using System.Threading;
+    using System.Linq;
     using System.Windows.Automation;
 
     using Winium.Cruciatus.Core;
@@ -259,9 +260,18 @@
         /// </summary>
         public CruciatusElement SelectedItem()
         {
-            return
-                this.FindElement(
+            if (this.IsExpanded)
+            {
+                return this.FindElement(
                     By.AutomationProperty(TreeScope.Subtree, SelectionItemPattern.IsSelectedProperty, true));
+            }
+            var pattern = this.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
+            var element = pattern.Current.GetSelection().FirstOrDefault();
+            if (element != null)
+            {
+                return new CruciatusElement(this, element, null);
+            }
+            return null;
         }
 
         #endregion
