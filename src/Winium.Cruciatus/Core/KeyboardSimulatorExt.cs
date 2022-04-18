@@ -7,7 +7,6 @@
     using NLog;
 
     using WindowsInput;
-    using WindowsInput.Native;
 
     #endregion
 
@@ -56,11 +55,12 @@
         /// <param name="keyCode">
         /// Ключ целевой кнопки.
         /// </param>
-        public void KeyPress(VirtualKeyCode keyCode)
+        public IKeyboard KeyPress(VirtualKeyCode keyCode)
         {
             this.logger.Info("Key press '{0}'", keyCode.ToString());
             this.keyboardSimulator.KeyPress(keyCode);
             Thread.Sleep(250);
+            return this;
         }
 
         /// <summary>

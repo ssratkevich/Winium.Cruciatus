@@ -2,7 +2,13 @@
 
 <!--## Unreleased-->
 
-## v2.10.0
+## v3.0.0
+- Get selected item in collapsed ComboBox mode.
+- Fixing non 100% screen resolution.
+- Switching to .NET 6.
+- `IKeyboard` interface extension. Added `KeyPress` method for press a single key.
+
+## v2.10.0
 
 - Add `RotationManager` for get and set display orientation (thanks to @jonstoneman)
 

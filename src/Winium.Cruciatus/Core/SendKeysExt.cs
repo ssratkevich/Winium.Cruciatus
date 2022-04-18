@@ -8,7 +8,7 @@
 
     using NLog;
 
-    using WindowsInput.Native;
+    using WindowsInput;
 
     #endregion
 
@@ -86,6 +86,17 @@
         /// Ключ целевой кнопки.
         /// </param>
         public IKeyboard KeyUp(VirtualKeyCode keyCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Эмулирует действие 'нажать и отпустить' над кнопкой.
+        /// </summary>
+        /// <param name="keyCode">
+        /// Ключ целевой кнопки.
+        /// </param>
+        public IKeyboard KeyPress(VirtualKeyCode keyCode)
         {
             throw new NotImplementedException();
         }

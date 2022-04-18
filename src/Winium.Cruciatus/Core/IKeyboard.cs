@@ -2,7 +2,7 @@
 {
     #region using
 
-    using WindowsInput.Native;
+    using WindowsInput;
 
     #endregion
 
@@ -28,6 +28,14 @@
         /// Ключ целевой кнопки.
         /// </param>
         IKeyboard KeyUp(VirtualKeyCode keyCode);
+
+        /// <summary>
+        /// Эмулирует действие 'нажать и отпустить' над кнопкой.
+        /// </summary>
+        /// <param name="keyCode">
+        /// Ключ целевой кнопки.
+        /// </param>
+        IKeyboard KeyPress(VirtualKeyCode keyCode);
 
         /// <summary>
         /// Эмулирует нажатие кнопки Backspace.

@@ -1,24 +1,25 @@
-﻿namespace Winium.Cruciatus
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using Winium.Cruciatus.Exceptions;
+
+namespace Winium.Cruciatus
 {
-    #region using
-
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-
-    using Winium.Cruciatus.Exceptions;
-
-    #endregion
-
     /// <summary>
-    /// Класс для запуска и завершения приложения.
+    /// Wrapper for external application.
     /// </summary>
     public class Application
     {
         #region Fields
 
+        /// <summary>
+        /// Full path to executable.
+        /// </summary>
         private readonly string executableFilePath;
 
+        /// <summary>
+        /// Executable owner process.
+        /// </summary>
         private Process process;
 
         #endregion
@@ -26,10 +27,10 @@
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает объект класса.
+        /// Creates instance of an Application.
         /// </summary>
         /// <param name="executableFilePath">
-        /// Полный путь до исполняемого файла.
+        /// Path to external application (absolute or relative).
         /// </param>
         public Application(string executableFilePath)
         {
@@ -53,32 +54,9 @@
 
         #region Public Methods and Operators
 
-        /// <summary>
-        /// Посылает сообщение о закрытии главному окну приложения.
-        /// </summary>
-        /// <returns>
-        /// true если приложение завершилось и false в противном случае.
-        /// </returns>
-        public bool Close()
-        {
-            this.process.CloseMainWindow();
-            return this.process.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
-        }
 
         /// <summary>
-        /// Убивает приложение.
-        /// </summary>
-        /// <returns>
-        /// true если приложение завершилось и false в противном случае.
-        /// </returns>
-        public bool Kill()
-        {
-            this.process.Kill();
-            return this.process.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
-        }
-
-        /// <summary>
-        /// Запускает исполняемый файл.
+        /// Starts executable without arguments.
         /// </summary>
         public void Start()
         {
@@ -86,10 +64,10 @@
         }
 
         /// <summary>
-        /// Запускает исполняемый файл с аргументами.
+        /// Starts executable with arguments.
         /// </summary>
         /// <param name="arguments">
-        /// Строка аргументов запуска приложения.
+        /// Arguments string.
         /// </param>
         public void Start(string arguments)
         {
@@ -103,13 +81,38 @@
             // ReSharper disable once AssignNullToNotNullAttribute
             // directory не может быть null, в связи с проверкой выше наличия файла executableFilePath
             var info = new ProcessStartInfo
-                           {
-                               FileName = this.executableFilePath, 
-                               WorkingDirectory = directory, 
-                               Arguments = arguments
-                           };
+            {
+                FileName = this.executableFilePath,
+                WorkingDirectory = directory,
+                Arguments = arguments
+            };
 
             this.process = Process.Start(info);
+        }
+
+
+        /// <summary>
+        /// Try to close main application window.
+        /// </summary>
+        /// <returns>
+        /// true - successful close, false - otherwise.
+        /// </returns>
+        public bool Close()
+        {
+            this.process.CloseMainWindow();
+            return this.process.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
+        }
+
+        /// <summary>
+        /// Kills the application.
+        /// </summary>
+        /// <returns>
+        /// true - successful kill, false - otherwise.
+        /// </returns>
+        public bool Kill()
+        {
+            this.process.Kill();
+            return this.process.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
         }
 
         #endregion

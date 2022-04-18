@@ -7,7 +7,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Windows.Automation;
 
-    using WindowsInput.Native;
+    using WindowsInput;
 
     using Winium.Cruciatus.Elements;
     using Winium.Cruciatus.Exceptions;

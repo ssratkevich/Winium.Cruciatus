@@ -1,36 +1,31 @@
-﻿namespace Winium.Cruciatus
+﻿using System;
+using System.Windows;
+using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Elements;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus
 {
-    #region using
-
-    using System;
-    using System.Windows;
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Elements;
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
-
     /// <summary>
-    /// Класс для работы с диалоговым окном MessageBox.
+    /// MessageBox helper class.
     /// </summary>
     public static class MessageBox
     {
         #region Public Methods and Operators
 
         /// <summary>
-        /// Кликает по заданной кнопке диалогового окна.
+        /// Makes a click on given dialog window button.
         /// </summary>
         /// <param name="dialogWindow">
-        /// Диалоговое окно.
+        /// Dialog window.
         /// </param>
         /// <param name="buttonsType">
-        /// Тип набора кнопок диалогово окна.
+        /// Message box button type.
         /// </param>
         /// <param name="targetButton">
-        /// Целевая кнопка.
+        /// Target button.
         /// </param>
         public static void ClickButton(
             CruciatusElement dialogWindow, 
