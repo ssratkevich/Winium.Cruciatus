@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using Winium.Cruciatus.Exceptions;
 
 namespace Winium.Cruciatus
@@ -54,6 +56,25 @@ namespace Winium.Cruciatus
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Return process id of application.
+        /// </summary>
+        /// <returns>Process id</returns>
+        public int GetProcessId()
+        {
+            return this.process.Id;
+        }
+
+        /// <summary>
+        /// Get exit state of launched application
+        /// </summary>
+        /// <returns>
+        /// true if it's already exit, false if it's still running
+        /// </returns>
+        public bool HasExited()
+        {
+            return this.process.HasExited;
+        }
 
         /// <summary>
         /// Starts executable without arguments.
@@ -90,7 +111,6 @@ namespace Winium.Cruciatus
             this.process = Process.Start(info);
         }
 
-
         /// <summary>
         /// Try to close main application window.
         /// </summary>
@@ -104,6 +124,19 @@ namespace Winium.Cruciatus
         }
 
         /// <summary>
+        /// Close child process
+        /// </summary>
+        /// <param name="child">Input child process to close</param>
+        /// <returns>
+        /// true if successfully close, otherwise return fail.
+        /// </returns>
+        public bool Close(Process child)
+        {
+            child.CloseMainWindow();
+            return child.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
+        }
+
+        /// <summary>
         /// Kills the application.
         /// </summary>
         /// <returns>
@@ -113,6 +146,38 @@ namespace Winium.Cruciatus
         {
             this.process.Kill();
             return this.process.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
+        }
+
+        /// <summary>
+        /// Kill child process
+        /// </summary>
+        /// <param name="child">Input child process to kill</param>
+        /// <returns>
+        /// true if successfully kill, otherwise return false
+        /// </returns>
+        public bool Kill(Process child)
+        {
+            child.Kill();
+            return child.WaitForExit(CruciatusFactory.Settings.WaitForExitTimeout);
+        }
+
+        /// <summary>
+        /// Get all children processes of parent one bases on its id.
+        /// </summary>
+        /// <param name="parentId">Input parent process id.</param>
+        /// <returns>List of child processes.</returns>
+        public List<Process> GetChildPrecesses(int parentId)
+        {
+            var query = "Select * From Win32_Process Where ParentProcessId = "
+                    + parentId;
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(query);
+            ManagementObjectCollection processList = searcher.Get();
+            List<Process> result = new List<Process>();
+            foreach (ManagementObject managedObject in processList)
+            {
+                result.Add(Process.GetProcessById(Convert.ToInt32(managedObject["ProcessID"])));
+            }
+            return result;
         }
 
         #endregion

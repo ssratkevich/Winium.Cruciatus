@@ -7,6 +7,7 @@
 - Fixing non 100% screen resolution.
 - Switching to .NET 6.
 - `IKeyboard` interface extension. Added `KeyPress` method for press a single key.
+- Add `GetChildPrecesses`, `GetProcessId`, `HasExited`, `Close(Process child)`, `Kill` to interact with child process.
 
 ## v2.10.0
 

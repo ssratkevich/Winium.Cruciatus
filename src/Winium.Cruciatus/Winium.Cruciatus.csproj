@@ -9,7 +9,7 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <Authors>ssratkevich, 2gis</Authors>
-    <Description>C# Framework for automated testing of Windows application based on WinFroms and WPF platforms.</Description>
+    <Description>C# Framework for automated testing of Windows application based on WinForms and WPF platforms.</Description>
     <Copyright>Copyright © 2022</Copyright>
     <Title>Winium.Cruciatus</Title>
     <Product>Winium.Cruciatus automation helper C# library.</Product>
@@ -50,7 +50,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\LogoSmall.png">
+    <None Include="..\LogoSmall.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

@@ -1,11 +1,8 @@
 ﻿using System.Windows.Automation;
-
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-
 using WindowsInput;
-
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Exceptions;
