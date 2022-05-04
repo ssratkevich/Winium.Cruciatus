@@ -1,14 +1,10 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System;
+using System.IO;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System;
-    using System.IO;
-
-    #endregion
-
     /// <summary>
-    /// Класс описывающий скриншот.
+    /// Screenshot.
     /// </summary>
     public class Screenshot
     {
@@ -22,7 +18,11 @@
 
         #region Constructors and Destructors
 
-        internal Screenshot(byte[] array)
+        /// <summary>
+        /// Creates new instance of sreenshot with given byte array.
+        /// </summary>
+        /// <param name="array">Screenshot image.</param>
+        public Screenshot(byte[] array)
         {
             if (array == null || array.Length == 0)
             {
@@ -38,26 +38,28 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// Возвращает скриншот в виде base64 строки.
+        /// Screenshot as base64 string.
         /// </summary>
-        public string AsBase64String()
-        {
-            return this.base64String;
-        }
+        /// <returns>
+        /// Screenshot as base64 string.
+        /// </returns>
+        public string AsBase64String() =>
+            this.base64String;
 
         /// <summary>
-        /// Возвращает скриншот в виде массива байт.
+        /// Screenshot as byte array.
         /// </summary>
-        public byte[] AsByteArray()
-        {
-            return this.byteArray;
-        }
+        /// <returns>
+        /// Screenshot as byte array.
+        /// </returns>
+        public byte[] AsByteArray() =>
+            this.byteArray;
 
         /// <summary>
-        /// Сохраняет скриншот в заданный файл.
+        /// Saves sreenshot to given file.
         /// </summary>
         /// <param name="filePath">
-        /// Путь до файла.
+        /// File path.
         /// </param>
         public void SaveAsFile(string filePath)
         {
@@ -79,12 +81,13 @@
         }
 
         /// <summary>
-        /// Возвращает скриншот в виде base64 строки.
+        /// Screenshot as base64 string.
         /// </summary>
-        public override string ToString()
-        {
-            return this.base64String;
-        }
+        /// <returns>
+        /// Screenshot as base64 string.
+        /// </returns>
+        public override string ToString() =>
+            this.base64String;
 
         #endregion
     }

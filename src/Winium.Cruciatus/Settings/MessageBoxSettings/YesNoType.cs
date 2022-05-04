@@ -1,25 +1,21 @@
-﻿namespace Winium.Cruciatus.Settings.MessageBoxSettings
+﻿using System;
+
+namespace Winium.Cruciatus.Settings.MessageBoxSettings
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Класс описывающий набор из 2 кнопок - Да и Нет.
+    /// Yes, No buttons description class.
     /// </summary>
     public class YesNoType : ICloneable
     {
         #region Public Properties
 
         /// <summary>
-        /// Уникальный идентификатор кнопки Нет.
+        /// No button UID.
         /// </summary>
         public string No { get; set; }
 
         /// <summary>
-        /// Уникальный идентификатор кнопки Да.
+        /// Yes button UID.
         /// </summary>
         public string Yes { get; set; }
 
@@ -27,10 +23,9 @@
 
         #region Public Methods and Operators
 
-        public object Clone()
-        {
-            return new YesNoType { Yes = this.Yes, No = this.No };
-        }
+        /// <inheritdoc/>
+        public object Clone() =>
+            new YesNoType { Yes = this.Yes, No = this.No };
 
         #endregion
     }

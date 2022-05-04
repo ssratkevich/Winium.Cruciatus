@@ -1,34 +1,30 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Перечисление поддерживаемых стратегий клика. Имеет атрибут Flags.
+    /// Click on element strategies.
     /// </summary>
     [Flags]
     public enum ClickStrategies
     {
         /// <summary>
-        /// Отсутствие определенной стратегии.
+        /// No strategy (try everything).
         /// </summary>
         None = 0, 
 
         /// <summary>
-        /// Стратегия использования свойства элемента ClickablePoint.
+        /// Click on automation element ClickablePoint.
         /// </summary>
-        ClickablePoint = 1, 
+        ClickablePoint = 1,
 
         /// <summary>
-        /// Стратегия использования свойства элемента BoundingRectangle.
+        /// Click on center of automation element BoundingRectangle.
         /// </summary>
         BoundingRectangleCenter = 2, 
 
         /// <summary>
-        /// Стратегия использования интерфейса InvokePattern.
+        /// Click through automation element InvokePattern.
         /// </summary>
         InvokePattern = 4
     }

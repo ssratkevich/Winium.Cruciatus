@@ -1,13 +1,12 @@
-﻿namespace Winium.Cruciatus.Helpers.XPath
+﻿using System.Windows.Automation;
+using System.Xml.XPath;
+
+namespace Winium.Cruciatus.Helpers.XPath
 {
-    #region using
-
-    using System.Windows.Automation;
-    using System.Xml.XPath;
-
-    #endregion
-
-    internal class PropertyItem : XPathItem
+    /// <summary>
+    /// Property item for xpath.
+    /// </summary>
+    public class PropertyItem : XPathItem
     {
         #region Fields
 
@@ -19,6 +18,11 @@
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Create xpath property wrapper for given element and automation property.
+        /// </summary>
+        /// <param name="parent">Parent element.</param>
+        /// <param name="property">Property.</param>
         public PropertyItem(ElementItem parent, AutomationProperty property)
         {
             this.parent = parent;
@@ -29,88 +33,69 @@
 
         #region Properties
 
-        internal override bool IsEmptyElement
-        {
-            get
-            {
-                return false;
-            }
-        }
+        /// <inheritdoc/>
+        public override bool IsEmptyElement =>
+            false;
 
-        internal override string Name
-        {
-            get
-            {
-                return AutomationPropertyHelper.GetPropertyName(this.property);
-            }
-        }
+        /// <inheritdoc/>
+        public override string Name =>
+            AutomationPropertyHelper.GetPropertyName(this.property);
 
-        internal override XPathNodeType NodeType
-        {
-            get
-            {
-                return XPathNodeType.Attribute;
-            }
-        }
+        /// <inheritdoc/>
+        public override XPathNodeType NodeType =>
+            XPathNodeType.Attribute;
 
-        internal override string Value
+        /// <inheritdoc/>
+        public override string Value
         {
             get
             {
-                var value = this.TypedValue();
+                var value = this.TypedValue;
                 var type = value as ControlType;
                 return type != null ? type.ProgrammaticName : value.ToString();
             }
         }
 
-        #endregion
-
-        #region Public Methods and Operators
-
-        public override object TypedValue()
-        {
-            return this.parent.GetPropertyValue(this.property);
-        }
+        /// <inheritdoc/>
+        public override object TypedValue =>
+            this.parent.GetPropertyValue(this.property);
 
         #endregion
 
         #region Methods
 
-        internal override bool IsSamePosition(XPathItem item)
+        /// <inheritdoc/>
+        public override bool IsSamePosition(XPathItem item)
         {
             var obj = item as PropertyItem;
             return obj != null && obj.parent == this.parent && obj.property.Equals(this.property);
         }
 
-        internal override XPathItem MoveToFirstChild()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToParent() =>
+            this.parent;
 
-        internal override XPathItem MoveToFirstProperty()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToFirstChild() =>
+            null;
 
-        internal override XPathItem MoveToNext()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToNext() =>
+            null;
 
-        internal override XPathItem MoveToNextProperty()
+        /// <inheritdoc/>
+        public override XPathItem MoveToPrevious() =>
+            null;
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToFirstProperty() =>
+            null;
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToNextProperty()
         {
             var nextProperty = this.parent.GetNextPropertyOrNull(this.property);
             return (nextProperty == null) ? null : new PropertyItem(this.parent, nextProperty);
-        }
-
-        internal override XPathItem MoveToParent()
-        {
-            return this.parent;
-        }
-
-        internal override XPathItem MoveToPrevious()
-        {
-            return null;
         }
 
         #endregion

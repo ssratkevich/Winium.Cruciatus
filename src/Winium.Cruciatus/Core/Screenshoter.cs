@@ -1,26 +1,17 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows;
+using Point = System.Drawing.Point;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Windows;
-
-    using Point = System.Drawing.Point;
-
-    #endregion
-
     /// <summary>
-    /// Класс для создания скриншотов рабочего стола.
+    /// Desktop screenshoter.
     /// </summary>
     public class Screenshoter : IScreenshoter
     {
-        #region Public Methods and Operators
-
-        /// <summary>
-        /// Возвращает скриншот рабочего стола.
-        /// </summary>
+        /// <inheritdoc/>
         public Screenshot GetScreenshot()
         {
             byte[] imageBytes;
@@ -45,7 +36,5 @@
 
             return new Screenshot(imageBytes);
         }
-
-        #endregion
     }
 }

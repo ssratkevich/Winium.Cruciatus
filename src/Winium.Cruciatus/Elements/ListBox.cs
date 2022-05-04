@@ -1,43 +1,32 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Элемент список.
+    /// Represents list box element.
     /// </summary>
     public class ListBox : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр списка.
+        /// Creates new instance of list box.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public ListBox(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр списка. Поиск осуществится только при необходимости.
+        /// Creates new instance of list box.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public ListBox(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public ListBox(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -46,22 +35,20 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// Прокручивает список до элемента, удовлетворяющего стратегии поиска. 
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Scrolls to element given by search strategy.
         /// </summary>
-        /// <param name="getStrategy">
-        /// Стратегия поиска целевого элемента.
-        /// </param>
+        /// <param name="getStrategy">Search strategy.</param>
+        /// <returns>Found element.</returns>
         public CruciatusElement ScrollTo(By getStrategy)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
                 throw new ElementNotEnabledException("NOT SCROLL");
             }
 
-            var scrollPattern = this.Instance.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
+            var scrollPattern = this.Element.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
             if (scrollPattern == null)
             {
                 Logger.Debug("{0} does not support ScrollPattern.", this);
@@ -104,25 +91,25 @@
             }
 
             // Если точка клика элемента под границей списка - докручиваем по вертикали вниз
-            while (element.Instance.ClickablePointUnder(this.Instance, scrollPattern))
+            while (element.Element.ClickablePointUnder(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
-            while (element.Instance.ClickablePointOver(this.Instance))
+            while (element.Element.ClickablePointOver(this.Element))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
             }
 
             // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
-            while (element.Instance.ClickablePointRight(this.Instance, scrollPattern))
+            while (element.Element.ClickablePointRight(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
-            while (element.Instance.ClickablePointLeft(this.Instance))
+            while (element.Element.ClickablePointLeft(this.Element))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
             }

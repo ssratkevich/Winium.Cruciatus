@@ -1,43 +1,32 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Класс для работы с диалоговым окном Microsoft.Win32.OpenFileDialog.
+    /// Represents <see cref="Microsoft.Win32.OpenFileDialog"/> window.
     /// </summary>
     public class OpenFileDialog : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Конструктор класса по объекту диалогового окна.
+        /// Create new instance.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public OpenFileDialog(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Конструторк класса.  Поиск осуществится только при необходимости.
+        /// Create new instance.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стретегия поиска.
-        /// </param>
-        public OpenFileDialog(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public OpenFileDialog(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -46,40 +35,26 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает кнопку Отмена.
+        /// Gets Cancel button.
         /// </summary>
-        public CruciatusElement CancelButton
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.OpenFileDialogUid.CancelButton;
-                return this.FindElement(By.Uid(TreeScope.Children, uid));
-            }
-        }
+        public CruciatusElement CancelButton =>
+            this.FindElement(By.Uid(TreeScope.Children,
+                CruciatusFactory.Settings.OpenFileDialogUid.CancelButton));
 
         /// <summary>
-        /// Возвращает выпадающий список с именем открываемого файла.
+        /// Gets file name combobox.
         /// </summary>
-        public ComboBox FileNameComboBox
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.OpenFileDialogUid.FileNameEditableComboBox;
-                return this.FindElement(By.Uid(TreeScope.Children, uid)).ToComboBox();
-            }
-        }
+        public ComboBox FileNameComboBox =>
+            this.FindElement(By.Uid(TreeScope.Children,
+                CruciatusFactory.Settings.OpenFileDialogUid.FileNameEditableComboBox))
+            .ToComboBox();
 
         /// <summary>
-        /// Возвращает кнопку Открыть.
+        /// Gets Open button.
         /// </summary>
-        public CruciatusElement OpenButton
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.OpenFileDialogUid.OpenButton;
-                return this.FindElement(By.Uid(TreeScope.Children, uid));
-            }
-        }
+        public CruciatusElement OpenButton =>
+            this.FindElement(By.Uid(TreeScope.Children,
+                CruciatusFactory.Settings.OpenFileDialogUid.OpenButton));
 
         #endregion
     }

@@ -1,22 +1,16 @@
-﻿namespace Winium.Cruciatus
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Automation;
+using NLog;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Elements;
+using Winium.Cruciatus.Extensions;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus
 {
-    #region using
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Automation;
-
-    using NLog;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Elements;
-    using Winium.Cruciatus.Extensions;
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
-
     internal static class CruciatusCommand
     {
         #region Static Fields
@@ -39,8 +33,8 @@
                 throw new ArgumentNullException("parent");
             }
 
-            var result = strategy.FindAll(parent.Instance, timeout);
-            return result.Select(e => new CruciatusElement(parent, e, strategy));
+            var result = strategy.FindAll(parent.Element, timeout);
+            return result.Select(e => CruciatusElement.Create(e, parent, strategy));
         }
 
         internal static CruciatusElement FindFirst(CruciatusElement parent, By strategy)
@@ -50,7 +44,7 @@
 
         internal static CruciatusElement FindFirst(CruciatusElement parent, By strategy, int timeout)
         {
-            var element = strategy.FindFirst(parent.Instance, timeout);
+            var element = strategy.FindFirst(parent.Element, timeout);
             if (element == null)
             {
                 Logger.Info("Element '{0}' not found", strategy);
@@ -58,7 +52,7 @@
                 return null;
             }
 
-            return new CruciatusElement(parent, element, strategy);
+            return CruciatusElement.Create(element, parent, strategy);
         }
 
         internal static bool TryClickOnBoundingRectangleCenter(
@@ -72,7 +66,7 @@
             }
 
             Point point;
-            if (!AutomationElementHelper.TryGetBoundingRectangleCenter(element.Instance, out point))
+            if (!AutomationElementHelper.TryGetBoundingRectangleCenter(element.Element, out point))
             {
                 Logger.Debug("Element '{0}' have empty BoundingRectangle", element);
                 return false;
@@ -138,7 +132,7 @@
             }
 
             object basePattern;
-            if (element.Instance.TryGetCurrentPattern(InvokePattern.Pattern, out basePattern))
+            if (element.Element.TryGetCurrentPattern(InvokePattern.Pattern, out basePattern))
             {
                 string cmd;
                 var invokePattern = (InvokePattern)basePattern;
@@ -170,7 +164,7 @@
             }
 
             object pattern;
-            if (element.Instance.TryGetCurrentPattern(TextPattern.Pattern, out pattern))
+            if (element.Element.TryGetCurrentPattern(TextPattern.Pattern, out pattern))
             {
                 var textPattern = pattern as TextPattern;
                 if (textPattern != null)
@@ -194,7 +188,7 @@
             }
 
             object pattern;
-            if (element.Instance.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
+            if (element.Element.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
             {
                 var valuePattern = pattern as ValuePattern;
                 if (valuePattern != null)

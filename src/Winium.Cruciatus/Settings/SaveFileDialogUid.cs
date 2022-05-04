@@ -1,35 +1,31 @@
-﻿namespace Winium.Cruciatus.Settings
+﻿using System;
+
+namespace Winium.Cruciatus.Settings
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Класс, описывающий уникальные идентификаторы элементов диалога SaveFileDialog.
+    /// SaveFileDialog elements descriptor.
     /// </summary>
     public class SaveFileDialogUid : ICloneable
     {
         #region Public Properties
 
         /// <summary>
-        /// Кнопка Отмена.
+        /// Cancel button UID.
         /// </summary>
         public string CancelButton { get; set; }
 
         /// <summary>
-        /// Редактируемый выпадающий список с именем сохраняемого файла.
+        /// File name combobox UID.
         /// </summary>
         public string FileNameEditableComboBox { get; set; }
 
         /// <summary>
-        /// Выпадающий список с типом сохраняемого файла.
+        /// File type combobox UID.
         /// </summary>
         public string FileTypeComboBox { get; set; }
 
         /// <summary>
-        /// Кнопка Сохранить.
+        /// Save button UID.
         /// </summary>
         public string SaveButton { get; set; }
 
@@ -37,16 +33,15 @@
 
         #region Public Methods and Operators
 
-        public object Clone()
-        {
-            return new SaveFileDialogUid
-                       {
-                           SaveButton = this.SaveButton, 
-                           CancelButton = this.CancelButton, 
-                           FileNameEditableComboBox = this.FileNameEditableComboBox, 
-                           FileTypeComboBox = this.FileTypeComboBox
-                       };
-        }
+        /// <inheritdoc/>
+        public object Clone() =>
+            new SaveFileDialogUid
+            {
+                SaveButton = this.SaveButton, 
+                CancelButton = this.CancelButton, 
+                FileNameEditableComboBox = this.FileNameEditableComboBox, 
+                FileTypeComboBox = this.FileTypeComboBox
+            };
 
         #endregion
     }

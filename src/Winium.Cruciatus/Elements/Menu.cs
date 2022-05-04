@@ -1,45 +1,34 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System;
+using System.Linq;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System;
-    using System.Linq;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Элемент меню.
+    /// Represents menu.
     /// </summary>
     public class Menu : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр меню.
+        /// Creates menu instance.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public Menu(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр меню. Поиск осуществится только при необходимости.
+        /// Creates menu instance.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public Menu(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public Menu(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -48,11 +37,10 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// Возвращает элемент меню, указанный последним в пути.
+        /// Get the menu item.
         /// </summary>
-        /// <param name="headersPath">
-        /// Путь из заголовков для прохода (пример: control$view$zoom).
-        /// </param>
+        /// <param name="headersPath">Headers path with '$' separator (ex:control$view$zoom).</param>
+        /// <returns>Menu item.</returns>
         public CruciatusElement GetItem(string headersPath)
         {
             if (string.IsNullOrEmpty(headersPath))
@@ -79,14 +67,13 @@
         }
 
         /// <summary>
-        /// Выбирает элемент меню, указанный последним в пути.
+        /// Select menu item.
         /// </summary>
-        /// <param name="headersPath">
-        /// Путь из заголовков для прохода (пример: control$view$zoom).
-        /// </param>
+        /// <param name="headersPath">Headers path with '$' separator (ex:control$view$zoom).</param>
+        /// <returns>Menu item.</returns>
         public virtual void SelectItem(string headersPath)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Select item failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();

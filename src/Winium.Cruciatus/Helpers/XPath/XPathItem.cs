@@ -1,52 +1,87 @@
-﻿namespace Winium.Cruciatus.Helpers.XPath
+﻿using System.Xml.XPath;
+
+namespace Winium.Cruciatus.Helpers.XPath
 {
-    #region using
-
-    using System.Xml.XPath;
-
-    #endregion
-
-    internal abstract class XPathItem
+    /// <summary>
+    /// XPath item base class.
+    /// </summary>
+    public abstract class XPathItem
     {
         #region Properties
 
-        internal abstract bool IsEmptyElement { get; }
+        /// <summary>
+        /// Checks element is empty.
+        /// </summary>
+        public abstract bool IsEmptyElement { get; }
 
-        internal abstract string Name { get; }
+        /// <summary>
+        /// Name of element.
+        /// </summary>
+        public abstract string Name { get; }
 
-        internal abstract XPathNodeType NodeType { get; }
+        /// <summary>
+        /// Type of node.
+        /// </summary>
+        public abstract XPathNodeType NodeType { get; }
 
-        internal virtual string Value
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        /// <summary>
+        /// Node value string representation.
+        /// </summary>
+        public virtual string Value =>
+            string.Empty;
 
-        #endregion
-
-        #region Public Methods and Operators
-
-        public abstract object TypedValue();
+        /// <summary>
+        /// Node value.
+        /// </summary>
+        public abstract object TypedValue { get; }
 
         #endregion
 
         #region Methods
 
-        internal abstract bool IsSamePosition(XPathItem item);
+        /// <summary>
+        /// Checks whether items are equals.
+        /// </summary>
+        /// <param name="item">Target item.</param>
+        /// <returns></returns>
+        public abstract bool IsSamePosition(XPathItem item);
 
-        internal abstract XPathItem MoveToFirstChild();
 
-        internal abstract XPathItem MoveToFirstProperty();
+        /// <summary>
+        /// Get parent element.
+        /// </summary>
+        /// <returns>Parent element.</returns>
+        public abstract XPathItem MoveToParent();
 
-        internal abstract XPathItem MoveToNext();
+        /// <summary>
+        /// Get first child item.
+        /// </summary>
+        /// <returns>First child item or null.</returns>
+        public abstract XPathItem MoveToFirstChild();
 
-        internal abstract XPathItem MoveToNextProperty();
+        /// <summary>
+        /// Get next sibling element.
+        /// </summary>
+        /// <returns>Next sibling element</returns>
+        public abstract XPathItem MoveToNext();
 
-        internal abstract XPathItem MoveToParent();
+        /// <summary>
+        /// Get previous sibling element.
+        /// </summary>
+        /// <returns>Previous sibling element.</returns>
+        public abstract XPathItem MoveToPrevious();
 
-        internal abstract XPathItem MoveToPrevious();
+        /// <summary>
+        /// Get first property of item.
+        /// </summary>
+        /// <returns>First property of item.</returns>
+        public abstract XPathItem MoveToFirstProperty();
+
+        /// <summary>
+        /// Get next sibling property.
+        /// </summary>
+        /// <returns>Next sibling propert</returns>
+        public abstract XPathItem MoveToNextProperty();
 
         #endregion
     }

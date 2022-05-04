@@ -1,46 +1,35 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Threading;
+using System.Linq;
+using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Threading;
-    using System.Linq;
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Представляет элемент управления выпадающий список.
+    /// Represents Combo box element.
     /// </summary>
     public class ComboBox : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр выпадающего списка.
+        /// Creates new instance of combo box.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public ComboBox(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр выпадающего списка. Поиск осуществится только при необходимости.
+        /// Creates new instance of combo box.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public ComboBox(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public ComboBox(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -49,51 +38,36 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает значение, указывающее, раскрыт ли выпадающий список.
+        /// ComboBox is in expanded state.
         /// </summary>
-        public bool IsExpanded
-        {
-            get
-            {
-                return this.ExpandCollapseState == ExpandCollapseState.Expanded;
-            }
-        }
+        public bool IsExpanded =>
+            this.ExpandCollapseState == ExpandCollapseState.Expanded;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Возвращает состояние раскрытости выпадающего списка.
+        /// ComboBox expanded state.
         /// </summary>
-        internal ExpandCollapseState ExpandCollapseState
-        {
-            get
-            {
-                return
-                    this.GetAutomationPropertyValue<ExpandCollapseState>(
-                        ExpandCollapsePattern.ExpandCollapseStateProperty);
-            }
-        }
+        internal ExpandCollapseState ExpandCollapseState =>
+            this.GetAutomationPropertyValue<ExpandCollapseState>(
+                ExpandCollapsePattern.ExpandCollapseStateProperty);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Сворачивает выпадающий список кликом.
+        /// Collapse by click.
         /// </summary>
-        public void Collapse()
-        {
+        public void Collapse() =>
             this.Collapse(ExpandStrategy.Click);
-        }
 
         /// <summary>
-        /// Сворачивает выпадающий список.
+        /// Collapse by strategy.
         /// </summary>
-        /// <param name="strategy">
-        /// Стратегия способа раскрытия.
-        /// </param>
+        /// <param name="strategy">Strategy.</param>
         public void Collapse(ExpandStrategy strategy)
         {
             if (this.ExpandCollapseState == ExpandCollapseState.Collapsed)
@@ -107,7 +81,7 @@
                     this.Click();
                     break;
                 case ExpandStrategy.ExpandCollapsePattern:
-                    this.Instance.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Collapse();
+                    this.Element.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Collapse();
                     break;
                 default:
                     Logger.Error("{0} is not valid or implemented collapse strategy.", strategy);
@@ -118,16 +92,15 @@
         }
 
         /// <summary>
-        /// Раскрывает выпадающий список кликом.
+        /// Expand by click.
         /// </summary>
-        public void Expand()
-        {
+        public void Expand() =>
             this.Expand(ExpandStrategy.Click);
-        }
 
         /// <summary>
-        /// Раскрывает выпадающий список.
+        /// Expand by strategy.
         /// </summary>
+        /// <param name="strategy">Strategy.</param>
         public void Expand(ExpandStrategy strategy)
         {
             if (this.ExpandCollapseState == ExpandCollapseState.Expanded)
@@ -141,7 +114,7 @@
                     this.Click();
                     break;
                 case ExpandStrategy.ExpandCollapsePattern:
-                    this.Instance.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Expand();
+                    this.Element.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Expand();
                     break;
                 default:
                     Logger.Error("{0} is not valid or implemented expand strategy.", strategy);
@@ -152,15 +125,13 @@
         }
 
         /// <summary>
-        /// Прокручивает список до элемента, удовлетворяющего стратегии поиска. 
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Scrolls list to needed item.
         /// </summary>
-        /// <param name="getStrategy">
-        /// Стратегия поиска целевого элемента.
-        /// </param>
+        /// <param name="getStrategy">Search strategy.</param>
+        /// <returns>Item or null.</returns>
         public CruciatusElement ScrollTo(By getStrategy)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
@@ -174,7 +145,7 @@
                 throw new CruciatusException("NOT SCROLL");
             }
 
-            var scrollPattern = this.Instance.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
+            var scrollPattern = this.Element.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
             if (scrollPattern == null)
             {
                 Logger.Error("{0} does not support ScrollPattern.", this);
@@ -219,7 +190,7 @@
 
             var strategy =
                 By.AutomationProperty(TreeScope.Subtree, AutomationElement.ClassNameProperty, "Popup")
-                    .And(AutomationElement.ProcessIdProperty, this.Instance.Current.ProcessId);
+                    .And(AutomationElement.ProcessIdProperty, this.Element.Current.ProcessId);
             var popupWindow = CruciatusFactory.Root.FindElement(strategy);
             if (popupWindow == null)
             {
@@ -228,26 +199,26 @@
             }
 
             // Если точка клика элемента под границей списка - докручиваем по вертикали вниз
-            var popupWindowInstance = popupWindow.Instance;
-            while (element.Instance.ClickablePointUnder(popupWindowInstance, scrollPattern))
+            var popupWindowInstance = popupWindow.Element;
+            while (element.Element.ClickablePointUnder(popupWindowInstance, scrollPattern))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.LargeIncrement);
             }
 
             // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
-            while (element.Instance.ClickablePointOver(popupWindowInstance))
+            while (element.Element.ClickablePointOver(popupWindowInstance))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
             }
 
             // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
-            while (element.Instance.ClickablePointRight(popupWindowInstance, scrollPattern))
+            while (element.Element.ClickablePointRight(popupWindowInstance, scrollPattern))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.LargeIncrement);
             }
 
             // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
-            while (element.Instance.ClickablePointLeft(popupWindowInstance))
+            while (element.Element.ClickablePointLeft(popupWindowInstance))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
             }
@@ -256,8 +227,9 @@
         }
 
         /// <summary>
-        /// Возвращает выбранный элемент.
+        /// Gets selected item.
         /// </summary>
+        /// <returns>Selected item.</returns>
         public CruciatusElement SelectedItem()
         {
             if (this.IsExpanded)
@@ -267,11 +239,7 @@
             }
             var pattern = this.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
             var element = pattern.Current.GetSelection().FirstOrDefault();
-            if (element != null)
-            {
-                return new CruciatusElement(this, element, null);
-            }
-            return null;
+            return element != null ? Create(element, this, null) : null;
         }
 
         #endregion

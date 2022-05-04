@@ -1,83 +1,90 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Collections.Generic;
+using System.Windows.Automation;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Collections.Generic;
-    using System.Windows.Automation;
-
-    #endregion
-
     /// <summary>
-    /// Конструктор стратегии поиска элементов.
+    /// Search strategies helper class.
     /// </summary>
     public abstract class By
     {
-        #region Public Methods and Operators
-
         /// <summary>
-        /// Поиск по AutomationProperty. 
-        /// Требуется подключить ссылку на UIAutomationClient.
+        /// Search by AutomationProperty.
         /// </summary>
         /// <param name="property">
-        /// Целевое свойство.
+        /// Target property.
         /// </param>
         /// <param name="value">
-        /// Значение целевого свойства.
+        /// Target property value.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns>
         public static ByProperty AutomationProperty(AutomationProperty property, object value)
         {
             return AutomationProperty(TreeScope.Subtree, property, value);
         }
 
         /// <summary>
-        /// Поиск по AutomationProperty с заданием глубины. 
-        /// Требуется подключить ссылку на UIAutomationClient.
+        /// Search by AutomationProperty within given scope context.
         /// </summary>
         /// <param name="scope">
-        /// Глубина поиска.
+        /// Search scope.
         /// </param>
         /// <param name="property">
-        /// Целевое свойство.
+        /// Target property.
         /// </param>
         /// <param name="value">
-        /// Значение целевого свойства.
+        /// Target property value.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByProperty AutomationProperty(TreeScope scope, AutomationProperty property, object value)
         {
             return new ByProperty(scope, property, value);
         }
 
         /// <summary>
-        /// Поиск по Name.
+        /// Search element by its name.
         /// </summary>
         /// <param name="value">
-        /// Имя элемента.
+        /// Element name.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByProperty Name(string value)
         {
             return AutomationProperty(AutomationElement.NameProperty, value);
         }
 
         /// <summary>
-        /// Поиск по Name с заданием глубины.
+        /// Search element by its name within given scope context.
         /// </summary>
         /// <param name="scope">
-        /// Глубина поиска.
+        /// Search scope.
         /// </param>
         /// <param name="value">
-        /// Имя элемента.
+        /// Element name.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByProperty Name(TreeScope scope, string value)
         {
             return AutomationProperty(scope, AutomationElement.NameProperty, value);
         }
 
         /// <summary>
-        /// Поиск по  AutomationId.
+        /// Search element by AutomationId.
         /// </summary>
         /// <param name="value">
-        /// Уникальный идентификатор элемента.
+        /// Element UID.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByProperty Uid(string value)
         {
             return AutomationProperty(AutomationElement.AutomationIdProperty, value);
@@ -87,40 +94,52 @@
         /// Поиск по AutomationId.
         /// </summary>
         /// <param name="scope">
-        /// Глубина поиска.
+        /// Search scope.
         /// </param>
         /// <param name="value">
-        /// Уникальный идентификатор элемента.
+        /// Element UID.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByProperty Uid(TreeScope scope, string value)
         {
             return AutomationProperty(scope, AutomationElement.AutomationIdProperty, value);
         }
 
         /// <summary>
-        /// Поиск по  XPath.
+        /// Search element by XPath.
         /// </summary>
         /// <param name="value">
-        /// Путь до файла в формате XPath.
+        /// XPath string.
         /// </param>
+        /// <returns>
+        /// Search strategy.
+        /// </returns> 
         public static ByXPath XPath(string value)
         {
             return new ByXPath(value);
         }
 
         /// <summary>
-        /// Возвращает строковое представление стратегии поиска.
+        /// Element search strategy string representation.
         /// </summary>
         public abstract override string ToString();
 
-        #endregion
+        /// <summary>
+        /// Find all elements with this strategy starting with given element.
+        /// </summary>
+        /// <param name="parent">Starting element.</param>
+        /// <param name="timeout">Search time threshold.</param>
+        /// <returns>Collection of found elements (may be null).</returns>
+        public abstract IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout);
 
-        #region Methods
-
-        internal abstract IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout);
-
-        internal abstract AutomationElement FindFirst(AutomationElement parent, int timeout);
-
-        #endregion
+        /// <summary>
+        /// Find first element with this strategy starting with given element.
+        /// </summary>
+        /// <param name="parent">Starting element.</param>
+        /// <param name="timeout">Search time threshold.</param>
+        /// <returns>Found element (may be null).</returns>
+        public abstract AutomationElement FindFirst(AutomationElement parent, int timeout);
     }
 }

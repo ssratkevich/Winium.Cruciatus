@@ -1,19 +1,17 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Windows;
+using System.Windows.Automation;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Windows;
-    using System.Windows.Automation;
-
-    #endregion
-
     /// <summary>
-    /// Класс свойств CruciatusElement.
+    /// Properties of CruciatusElement.
     /// </summary>
     public class CruciatusElementProperties
     {
         #region Fields
-
+        /// <summary>
+        /// Wrapped automation element.
+        /// </summary>
         private readonly AutomationElement element;
 
         #endregion
@@ -30,72 +28,43 @@
         #region Public Properties
 
         /// <summary>
-        /// Свойство BoundingRectangle.
+        /// BoundingRectangle property.
         /// </summary>
-        public Rect BoundingRectangle
-        {
-            get
-            {
-                return this.element.Current.BoundingRectangle;
-            }
-        }
+        public Rect BoundingRectangle =>
+            this.element.Current.BoundingRectangle;
 
         /// <summary>
-        /// Свойство ClickablePoint. Внимание, значение может отсутствовать.
+        /// ClickablePoint property.
+        /// Warning: Could be null.
         /// </summary>
-        public Point? ClickablePoint
-        {
-            get
-            {
-                Point point;
-                var exists = this.element.TryGetClickablePoint(out point);
-                return exists ? point : new Point?();
-            }
-        }
+        public Point? ClickablePoint =>
+            this.element.TryGetClickablePoint(out var point)
+            ? point
+            : new Point?();
 
         /// <summary>
-        /// Свойство IsEnabled.
+        /// IsEnabled property.
         /// </summary>
-        public bool IsEnabled
-        {
-            get
-            {
-                return this.element.Current.IsEnabled;
-            }
-        }
+        public bool IsEnabled =>
+            this.element.Current.IsEnabled;
 
         /// <summary>
-        /// Свойство IsOffscreen.
+        /// IsOffscreen property.
         /// </summary>
-        public bool IsOffscreen
-        {
-            get
-            {
-                return this.element.Current.IsOffscreen;
-            }
-        }
+        public bool IsOffscreen =>
+            this.element.Current.IsOffscreen;
 
         /// <summary>
-        /// Свойство Name.
+        /// Name property.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.element.Current.Name;
-            }
-        }
+        public string Name =>
+            this.element.Current.Name;
 
         /// <summary>
-        /// Строковое представление RuntimeId элемента.
+        /// RuntimeId property.
         /// </summary>
-        public string RuntimeId
-        {
-            get
-            {
-                return string.Join(" ", this.element.GetRuntimeId());
-            }
-        }
+        public string RuntimeId =>
+            string.Join(" ", this.element.GetRuntimeId());
 
         #endregion
     }

@@ -1,11 +1,7 @@
-﻿namespace Winium.Cruciatus.Helpers
+﻿using System.Windows;
+
+namespace Winium.Cruciatus.Helpers
 {
-    #region using
-
-    using System.Windows;
-
-    #endregion
-
     internal static class ScreenCoordinatesHelper
     {
         #region Static Fields

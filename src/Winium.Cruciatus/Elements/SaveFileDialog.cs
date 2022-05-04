@@ -1,43 +1,32 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Класс для работы с диалоговым окном Microsoft.Win32.SaveFileDialog.
+    /// Represents <see cref="Microsoft.Win32.SaveFileDialog"/> window.
     /// </summary>
     public class SaveFileDialog : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр диалогового окна.
+        /// Creates new instance.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public SaveFileDialog(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр диалогового окна. Поиск осуществится только при необходимости.
+        /// Creates new instance.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public SaveFileDialog(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public SaveFileDialog(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -46,52 +35,34 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает кнопку Отмена.
+        /// Gets Cancel button
         /// </summary>
-        public CruciatusElement CancelButton
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.SaveFileDialogUid.CancelButton;
-                return this.FindElement(By.Uid(TreeScope.Children, uid));
-            }
-        }
+        public CruciatusElement CancelButton =>
+            this.FindElement(By.Uid(TreeScope.Children,
+                CruciatusFactory.Settings.SaveFileDialogUid.CancelButton));
+            
+        /// <summary>
+        /// Gets file name combo box.
+        /// </summary>
+        public ComboBox FileNameComboBox =>
+            this.FindElement(By.Uid(TreeScope.Subtree,
+                CruciatusFactory.Settings.SaveFileDialogUid.FileNameEditableComboBox))
+            .ToComboBox();
 
         /// <summary>
-        /// Возвращает выпадающий список с именем открываемого файла.
+        /// Gets file type combo box.
         /// </summary>
-        public ComboBox FileNameComboBox
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.SaveFileDialogUid.FileNameEditableComboBox;
-                return this.FindElement(By.Uid(TreeScope.Subtree, uid)).ToComboBox();
-            }
-        }
+        public ComboBox FileTypeComboBox =>
+            this.FindElement(By.Uid(TreeScope.Subtree,
+                CruciatusFactory.Settings.SaveFileDialogUid.FileTypeComboBox))
+            .ToComboBox();
 
         /// <summary>
-        /// Возвращает выпадающий список с типом открываемого файла.
+        /// Gets Save button.
         /// </summary>
-        public ComboBox FileTypeComboBox
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.SaveFileDialogUid.FileTypeComboBox;
-                return this.FindElement(By.Uid(TreeScope.Subtree, uid)).ToComboBox();
-            }
-        }
-
-        /// <summary>
-        /// Возвращает кнопку Сохранить.
-        /// </summary>
-        public CruciatusElement SaveButton
-        {
-            get
-            {
-                var uid = CruciatusFactory.Settings.SaveFileDialogUid.SaveButton;
-                return this.FindElement(By.Uid(TreeScope.Children, uid));
-            }
-        }
+        public CruciatusElement SaveButton =>
+            this.FindElement(By.Uid(TreeScope.Children,
+                CruciatusFactory.Settings.SaveFileDialogUid.SaveButton));
 
         #endregion
     }

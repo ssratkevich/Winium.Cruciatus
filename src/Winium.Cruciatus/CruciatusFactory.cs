@@ -11,7 +11,7 @@ using Winium.Cruciatus.Settings;
 namespace Winium.Cruciatus
 {
     /// <summary>
-    /// Класс доступа к инфраструктуре Cruciatus.
+    /// Class for access to Cruciatus infrastructure.
     /// </summary>
     public static class CruciatusFactory
     {
@@ -41,104 +41,67 @@ namespace Winium.Cruciatus
         #region Public Properties
 
         /// <summary>
-        /// Возвращает элемент находящийся в фокусе.
+        /// Get the focused element.
         /// </summary>
-        public static CruciatusElement FocusedElement
-        {
-            get
-            {
-                return new CruciatusElement(null, AutomationElement.FocusedElement, null);
-            }
-        }
+        public static CruciatusElement FocusedElement =>
+            CruciatusElement.Create(AutomationElement.FocusedElement, null, null);
 
         /// <summary>
-        /// Возвращает текущий симулятор клавиатуры.
+        /// Get the current keyboard simulator.
         /// </summary>
-        public static IKeyboard Keyboard
-        {
-            get
-            {
-                return GetSpecificKeyboard(Settings.KeyboardSimulatorType);
-            }
-        }
+        public static IKeyboard Keyboard =>
+            GetSpecificKeyboard(Settings.KeyboardSimulatorType);
 
         /// <summary>
-        /// Возвращает объект, используемый для ведения логов.
+        /// Get the logger.
         /// </summary>
-        public static Logger Logger
-        {
-            get
-            {
-                return LogManager.GetLogger("cruciatus");
-            }
-        }
+        public static Logger Logger =>
+            LogManager.GetLogger("cruciatus");
 
         /// <summary>
-        /// Возвращает симулятор мыши.
+        /// Get the mouse simulator.
         /// </summary>
-        public static MouseSimulatorExt Mouse
-        {
-            get
-            {
-                return mouseSimulatorExt;
-            }
-        }
-
+        public static MouseSimulatorExt Mouse =>
+            mouseSimulatorExt;
+            
         /// <summary>
-        /// Возвращает корневой элемент - Рабочий стол.
+        /// Get the root element for Desktop.
         /// </summary>
-        public static CruciatusElement Root
-        {
-            get
-            {
-                return new CruciatusElement(null, AutomationElement.RootElement, null);
-            }
-        }
-
+        public static CruciatusElement Root =>
+            CruciatusElement.Create(AutomationElement.RootElement, null, null);
+            
         /// <summary>
-        /// Возвращает объект, используемый для снятия скриншотов.
+        /// Get the screenshoter.
         /// </summary>
-        public static IScreenshoter Screenshoter
-        {
-            get
-            {
-                return screenshoter;
-            }
-        }
-
+        public static IScreenshoter Screenshoter =>
+            screenshoter;
+            
         /// <summary>
-        /// Возвращает объект по управлению настройками Crucaitus.
+        /// Get the Crucaitus settings.
         /// </summary>
-        public static CruciatusSettings Settings
-        {
-            get
-            {
-                return CruciatusSettings.Instance;
-            }
-        }
+        public static CruciatusSettings Settings =>
+            CruciatusSettings.Instance;
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Возвращает специфичный симулятор клавиатуры по заданному типу.
+        /// Get keyboard simulator of given type.
         /// </summary>
         /// <param name="keyboardSimulatorType">
-        /// Тип симулятора клавиатуры.
+        /// Keyboard simulator type.
         /// </param>
-        public static IKeyboard GetSpecificKeyboard(KeyboardSimulatorType keyboardSimulatorType)
-        {
-            switch (keyboardSimulatorType)
+        /// <returns>
+        /// Keyboard simulator.
+        /// </returns>
+        public static IKeyboard GetSpecificKeyboard(KeyboardSimulatorType keyboardSimulatorType) =>
+            keyboardSimulatorType switch
             {
-                case KeyboardSimulatorType.BasedOnInputSimulatorLib:
-                    return keyboardSimulatorExt;
-                case KeyboardSimulatorType.BasedOnWindowsFormsSendKeysClass:
-                    return sendKeysExt;
-            }
-
-            throw new CruciatusException("Unknown KeyboardSimulatorType");
-        }
+                KeyboardSimulatorType.BasedOnInputSimulatorLib => keyboardSimulatorExt,
+                KeyboardSimulatorType.BasedOnWindowsFormsSendKeysClass => sendKeysExt,
+                _ => throw new CruciatusException("Unknown KeyboardSimulatorType")
+            };
 
         #endregion
 

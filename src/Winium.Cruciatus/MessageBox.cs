@@ -38,7 +38,7 @@ namespace Winium.Cruciatus
             }
 
             var condition = new PropertyCondition(WindowPattern.IsModalProperty, true);
-            var modalwindow = AutomationElementHelper.FindFirst(dialogWindow.Instance, TreeScope.Children, condition);
+            var modalwindow = AutomationElementHelper.FindFirst(dialogWindow.Element, TreeScope.Children, condition);
             if (modalwindow == null)
             {
                 throw new CruciatusException("NOT CLICK BUTTON");
@@ -118,7 +118,7 @@ namespace Winium.Cruciatus
                 }
             }
 
-            var buttonElement = new CruciatusElement(dialogWindow, modalwindow, null).FindElement(By.Uid(uid));
+            var buttonElement = CruciatusElement.Create(modalwindow, dialogWindow, null).FindElement(By.Uid(uid));
             buttonElement.Click();
         }
 

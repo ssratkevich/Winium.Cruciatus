@@ -1,19 +1,13 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Automation;
+using NLog;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System;
-    using System.Collections.Generic;
-    using System.Windows.Automation;
-
-    using NLog;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
     /// Базовый элемент управления.
     /// </summary>
@@ -21,23 +15,26 @@
     {
         #region Static Fields
 
+        /// <summary>
+        /// Logger instance.
+        /// </summary>
         protected static readonly Logger Logger = CruciatusFactory.Logger;
 
         #endregion
 
         #region Fields
 
-        private AutomationElement instance;
+        private AutomationElement element;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр элемента.
+        /// Copies element instance.
         /// </summary>
         /// <param name="element">
-        /// Исходный элемент.
+        /// Base element.
         /// </param>
         public CruciatusElement(CruciatusElement element)
         {
@@ -46,21 +43,21 @@
                 throw new ArgumentNullException("element");
             }
 
-            this.Instance = element.Instance;
+            this.Element = element.Element;
             this.Parent = element;
-            this.FindStrategy = element.FindStrategy;
+            this.SearchStrategy = element.SearchStrategy;
         }
 
         /// <summary>
-        /// Создает экземпляр элемента. Поиск осуществится только при необходимости.
+        /// Create element instance. Do delayed search (if required).
         /// </summary>
         /// <param name="parent">
-        /// Родительский элемент.
+        /// Parent element.
         /// </param>
-        /// <param name="findStrategy">
-        /// Стратегия поиска элемента.
+        /// <param name="searchStrategy">
+        /// Element search strategy.
         /// </param>
-        public CruciatusElement(CruciatusElement parent, By findStrategy)
+        public CruciatusElement(CruciatusElement parent, By searchStrategy)
         {
             if (parent == null)
             {
@@ -68,27 +65,71 @@
             }
 
             this.Parent = parent;
-            this.FindStrategy = findStrategy;
+            this.SearchStrategy = searchStrategy;
         }
 
-        internal CruciatusElement(CruciatusElement parent, AutomationElement element, By findStrategy)
+        /// <summary>
+        /// Creates element with given parent, wrapped automation peer and search strategy.
+        /// </summary>
+        /// <param name="element">Wrapped automation element.</param>
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Element search strategy.</param>
+        private CruciatusElement(AutomationElement element, CruciatusElement parent, By searchStrategy)
         {
+            if (element == null && (parent == null || searchStrategy == null))
+            {
+                throw new InvalidOperationException($"Invalid operation. Either {nameof(element)} or {nameof(parent)} and {nameof(searchStrategy)} must be provided.");
+            }
+            this.Element = element;
             this.Parent = parent;
-            this.Instance = element;
-            this.FindStrategy = findStrategy;
+            this.SearchStrategy = searchStrategy;
         }
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
-        /// Стратегия поиска элемента.
+        /// Parent element (if exists).
         /// </summary>
-        public By FindStrategy { get; internal set; }
+        public CruciatusElement Parent { get; internal set; }
 
         /// <summary>
-        /// Возвращает true, если элемент существует, иначе false (например, родительское окно было закрыто).
+        /// Element search strategy.
+        /// </summary>
+        public By SearchStrategy { get; internal set; }
+
+        /// <summary>
+        /// Automation element.
+        /// </summary>
+        public AutomationElement Element
+        {
+            get
+            {
+                if (this.element == null
+                    && this.Parent != null
+                    && this.SearchStrategy != null)
+                {
+                    var element = this.Parent.FindElement(this.SearchStrategy);
+                    this.element = element != null ? element.Element : null;
+                }
+
+                if (this.element == null)
+                {
+                    throw new NoSuchElementException("ELEMENT NOT FOUND");
+                }
+
+                return this.element;
+            }
+
+            internal set
+            {
+                this.element = value;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether element exists.
         /// </summary>
         public bool IsStale
         {
@@ -96,7 +137,7 @@
             {
                 try
                 {
-                    this.Instance.GetCurrentPropertyValue(AutomationElement.AutomationIdProperty);
+                    this.Element.GetCurrentPropertyValue(AutomationElement.AutomationIdProperty);
                     return false;
                 }
                 catch (NoSuchElementException)
@@ -111,98 +152,69 @@
         }
 
         /// <summary>
-        /// Свойства элемента.
+        /// Element properties.
         /// </summary>
-        public CruciatusElementProperties Properties
-        {
-            get
-            {
-                return new CruciatusElementProperties(this.Instance);
-            }
-        }
-
-        #endregion
-
-        #region Properties
-
-        internal AutomationElement Instance
-        {
-            get
-            {
-                if (this.instance == null)
-                {
-                    var element = this.Parent.FindElement(this.FindStrategy);
-                    this.instance = element != null ? element.Instance : null;
-                }
-
-                if (this.instance == null)
-                {
-                    throw new NoSuchElementException("ELEMENT NOT FOUND");
-                }
-
-                return this.instance;
-            }
-
-            set
-            {
-                this.instance = value;
-            }
-        }
-
-        internal CruciatusElement Parent { get; set; }
+        public CruciatusElementProperties Properties =>
+            new CruciatusElementProperties(this.Element);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Клик по элементу.
+        /// Creates element with given parent, wrapped automation peer and search strategy.
         /// </summary>
-        public void Click()
-        {
+        /// <param name="element">Wrapped automation element.</param>
+        /// <param name="parent">Parent element (may be null if element is not null).</param>
+        /// <param name="searchStrategy">Element search strategy (may be null if element is not null).</param>
+        /// <returns>
+        /// Created element.
+        /// </returns>
+        public static CruciatusElement Create(AutomationElement element, CruciatusElement parent, By searchStrategy) =>
+            new CruciatusElement(element, parent, searchStrategy);
+
+        /// <summary>
+        /// Does click by element.
+        /// </summary>
+        public void Click() =>
             this.Click(CruciatusFactory.Settings.ClickButton);
-        }
 
         /// <summary>
-        /// Клик по элементу.
+        /// Does click by element.
         /// </summary>
         /// <param name="button">
-        /// Используемая кнопка мыши.
+        /// Mouse button.
         /// </param>
-        public void Click(MouseButton button)
-        {
+        public void Click(MouseButton button) =>
             this.Click(button, ClickStrategies.None, false);
-        }
 
         /// <summary>
-        /// Клик по элементу.
+        /// Does click by element.
         /// </summary>
         /// <param name="button">
-        /// Используемая кнопка мыши.
+        /// Mouse button.
         /// </param>
         /// <param name="strategy">
-        /// Стратегия клика.
+        /// Click strategy.
         /// </param>
-        public void Click(MouseButton button, ClickStrategies strategy)
-        {
+        public void Click(MouseButton button, ClickStrategies strategy) =>
             this.Click(button, strategy, false);
-        }
 
         /// <summary>
-        /// Клик по элементу.
+        /// Does click by element.
         /// </summary>
         /// <param name="button">
-        /// Используемая кнопка мыши.
+        /// Mouse button.
         /// </param>
         /// <param name="strategy">
-        /// Стратегия клика.
+        /// Click strategy.
         /// </param>
         /// <param name="doubleClick">
-        /// Флаг двойного клика.
+        /// Is double click.
         /// </param>
         public void Click(MouseButton button, ClickStrategies strategy, bool doubleClick)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Click failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
@@ -243,43 +255,39 @@
         }
 
         /// <summary>
-        /// Двойной клик по элементу.
+        /// Does double click by element.
         /// </summary>
-        public void DoubleClick()
-        {
+        public void DoubleClick() =>
             this.DoubleClick(CruciatusFactory.Settings.ClickButton);
-        }
 
         /// <summary>
-        /// Двойной клик по элементу.
+        /// Does double click by element.
         /// </summary>
         /// <param name="button">
-        /// Используемая кнопка мыши.
+        /// Mouse button.
         /// </param>
-        public void DoubleClick(MouseButton button)
-        {
+        public void DoubleClick(MouseButton button) =>
             this.DoubleClick(button, ClickStrategies.None);
-        }
 
         /// <summary>
-        /// Двойной клик по элементу.
+        /// Does double click by element.
         /// </summary>
         /// <param name="button">
-        /// Используемая кнопка мыши.
+        /// Mouse button.
         /// </param>
         /// <param name="strategy">
-        /// Стратегия клика.
+        /// Click strategy.
         /// </param>
-        public void DoubleClick(MouseButton button, ClickStrategies strategy)
-        {
+        public void DoubleClick(MouseButton button, ClickStrategies strategy) =>
             this.Click(button, strategy, true);
-        }
 
+        /// <inheritdoc/>
         public bool Equals(CruciatusElement other)
         {
-            return other != null && this.Instance.Equals(other.Instance);
+            return other != null && this.Element.Equals(other.Element);
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             var cruciatusElement = obj as CruciatusElement;
@@ -287,75 +295,75 @@
         }
 
         /// <summary>
-        /// Поиск элемента.
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Does element search.
         /// </summary>
         /// <param name="strategy">
-        /// Стратегия поиска.
+        /// Search strategy.
         /// </param>
-        public virtual CruciatusElement FindElement(By strategy)
-        {
-            return CruciatusCommand.FindFirst(this, strategy);
-        }
+        /// <returns>
+        /// Returns found element or null if nothing found.
+        /// </returns>
+        public virtual CruciatusElement FindElement(By strategy) =>
+            CruciatusCommand.FindFirst(this, strategy);
+
 
         /// <summary>
-        /// Поиск элемента по Name.
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Search element by name.
         /// </summary>
         /// <param name="value">
-        /// Имя элемента.
+        /// Element name.
         /// </param>
-        public virtual CruciatusElement FindElementByName(string value)
-        {
-            return this.FindElement(By.Name(value));
-        }
+        /// <returns>
+        /// Returns found element or null if nothing found.
+        /// </returns>
+        public virtual CruciatusElement FindElementByName(string value) =>
+            this.FindElement(By.Name(value));
 
         /// <summary>
-        /// Поиск элемента по AutomationId.
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Search element by AutomationId.
         /// </summary>
         /// <param name="value">
-        /// Уникальный идентификатор элемента.
+        /// Element UID.
         /// </param>
-        public virtual CruciatusElement FindElementByUid(string value)
-        {
-            return this.FindElement(By.Uid(value));
-        }
+        /// <returns>
+        /// Returns found element or null if nothing found.
+        /// </returns>
+        public virtual CruciatusElement FindElementByUid(string value) =>
+            this.FindElement(By.Uid(value));
 
         /// <summary>
-        /// Поиск элементов.
-        /// Возвращает целевой элемент, либо null, если он не найден.
+        /// Does elements search.
         /// </summary>
         /// <param name="strategy">
-        /// Стратегия поиска.
+        /// Search strategy.
         /// </param>
-        public IEnumerable<CruciatusElement> FindElements(By strategy)
-        {
-            return CruciatusCommand.FindAll(this, strategy);
-        }
+        /// <returns>
+        /// Returns founded elements or null if nothing found.
+        /// </returns>
+        public IEnumerable<CruciatusElement> FindElements(By strategy) =>
+            CruciatusCommand.FindAll(this, strategy);
 
-        public override int GetHashCode()
-        {
-            return this.Instance.GetHashCode();
-        }
+        /// <inheritdoc/>
+        public override int GetHashCode() =>
+            this.Element.GetHashCode();
 
         /// <summary>
-        /// Устанавливает фокус на элементе.
-        /// Если элемент - окно и оно было свёрнуто, то разворачивает его.
+        /// Sets the focus on element.
+        /// If element is collapsed window then expand it.
         /// </summary>
         public void SetFocus()
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Set focus failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
                 throw new ElementNotEnabledException("NOT SET FOCUS");
             }
 
-            if (this.Instance.Current.ControlType.Equals(ControlType.Window))
+            if (this.Element.Current.ControlType.Equals(ControlType.Window))
             {
                 object windowPatternObject;
-                if (this.Instance.TryGetCurrentPattern(WindowPattern.Pattern, out windowPatternObject))
+                if (this.Element.TryGetCurrentPattern(WindowPattern.Pattern, out windowPatternObject))
                 {
                     ((WindowPattern)windowPatternObject).SetWindowVisualState(WindowVisualState.Normal);
                     return;
@@ -364,7 +372,7 @@
 
             try
             {
-                this.Instance.SetFocus();
+                this.Element.SetFocus();
             }
             catch (InvalidOperationException exception)
             {
@@ -375,14 +383,14 @@
         }
 
         /// <summary>
-        /// Установка текста.
+        /// Set element text.
         /// </summary>
         /// <param name="text">
-        /// Целевой текст.
+        /// Text to set.
         /// </param>
         public void SetText(string text)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Set text failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
@@ -395,18 +403,16 @@
         }
 
         /// <summary>
-        /// Возвращает текст элемента.
+        /// Get element text.
         /// </summary>
-        public string Text()
-        {
-            return this.Text(GetTextStrategies.None);
-        }
+        public string Text() =>
+            this.Text(GetTextStrategies.None);
 
         /// <summary>
-        /// Возвращает текст элемента.
+        /// Get element text with given strategy.
         /// </summary>
         /// <param name="strategy">
-        /// Стратегия получения элемента.
+        /// Element text getting strategy.
         /// </param>
         public string Text(GetTextStrategies strategy)
         {
@@ -438,13 +444,13 @@
         }
 
         /// <summary>
-        /// Возвращает строковое представление элемента.
+        /// Gets element string representation.
         /// </summary>
         public override string ToString()
         {
-            var typeName = this.Instance.Current.ControlType.ProgrammaticName;
-            var uid = this.Instance.Current.AutomationId;
-            var name = this.Instance.Current.Name;
+            var typeName = this.Element.Current.ControlType.ProgrammaticName;
+            var uid = this.Element.Current.AutomationId;
+            var name = this.Element.Current.Name;
             var str = string.Format(
                 "{0}{1}{2}", 
                 "type: " + typeName, 

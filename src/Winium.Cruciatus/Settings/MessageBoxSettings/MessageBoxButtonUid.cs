@@ -1,40 +1,36 @@
-﻿namespace Winium.Cruciatus.Settings.MessageBoxSettings
+﻿using System;
+
+namespace Winium.Cruciatus.Settings.MessageBoxSettings
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Класс описывающий уникальные идентификаторы кнопок диалогового окна MessageBox.
+    /// MessageBox dialog window buttons description class.
     /// </summary>
     public class MessageBoxButtonUid : ICloneable
     {
         #region Public Properties
 
         /// <summary>
-        /// Уникальный идентификатор кнопки Отмена.
+        /// Cancel button UID.
         /// </summary>
         public string CloseButton { get; set; }
 
         /// <summary>
-        /// Тип набор из 2 кнопок - Ок и Отмена.
+        /// Two Ok, Cancel buttons set.
         /// </summary>
         public OkCancelType OkCancelType { get; set; }
 
         /// <summary>
-        /// Тип набор из 1 кнопки - Ок.
+        /// One Ok button set.
         /// </summary>
         public OkType OkType { get; set; }
 
         /// <summary>
-        /// Тип набор из 2 кнопок - Да, Нет и Отмена.
+        /// Three Yes, No, Cancel buttons set.
         /// </summary>
         public YesNoCancelType YesNoCancelType { get; set; }
 
         /// <summary>
-        /// Тип набор из 2 кнопок - Да и Нет.
+        /// Two Yes, No buttons set.
         /// </summary>
         public YesNoType YesNoType { get; set; }
 
@@ -42,17 +38,16 @@
 
         #region Public Methods and Operators
 
-        public object Clone()
-        {
-            return new MessageBoxButtonUid
-                       {
-                           CloseButton = this.CloseButton, 
-                           OkType = (OkType)this.OkType.Clone(), 
-                           OkCancelType = (OkCancelType)this.OkCancelType.Clone(), 
-                           YesNoType = (YesNoType)this.YesNoType.Clone(), 
-                           YesNoCancelType = (YesNoCancelType)this.YesNoCancelType.Clone()
-                       };
-        }
+        /// <inheritdoc/>
+        public object Clone() =>
+            new MessageBoxButtonUid
+            {
+                CloseButton = this.CloseButton, 
+                OkType = (OkType)this.OkType.Clone(), 
+                OkCancelType = (OkCancelType)this.OkCancelType.Clone(), 
+                YesNoType = (YesNoType)this.YesNoType.Clone(), 
+                YesNoCancelType = (YesNoCancelType)this.YesNoCancelType.Clone()
+            };
 
         #endregion
     }

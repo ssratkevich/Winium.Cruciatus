@@ -1,17 +1,17 @@
 ﻿namespace Winium.Cruciatus.Core
 {
     /// <summary>
-    /// Перечисление поддерживаемых стратегий раскрытия выпадающего элемента.
+    /// Expanding element supported strategies.
     /// </summary>
     public enum ExpandStrategy
     {
         /// <summary>
-        /// Стратегия раскрытия через клик по элементу.
+        /// Expanding through click.
         /// </summary>
-        Click = 0, 
+        Click = 0,
 
         /// <summary>
-        /// Стратегия использования интерфейса ExpandCollapsePattern.
+        /// Expanding through automation element ExpandCollapsePattern.
         /// </summary>
         ExpandCollapsePattern = 1
     }

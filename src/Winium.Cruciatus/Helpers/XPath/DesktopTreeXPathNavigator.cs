@@ -1,15 +1,14 @@
-﻿namespace Winium.Cruciatus.Helpers.XPath
+﻿using System;
+using System.Windows.Automation;
+using System.Xml;
+using System.Xml.XPath;
+
+namespace Winium.Cruciatus.Helpers.XPath
 {
-    #region using
-
-    using System;
-    using System.Windows.Automation;
-    using System.Xml;
-    using System.Xml.XPath;
-
-    #endregion
-
-    internal class DesktopTreeXPathNavigator : XPathNavigator
+    /// <summary>
+    /// Navigator for automation tree.
+    /// </summary>
+    public class DesktopTreeXPathNavigator : XPathNavigator
     {
         #region Fields
 
@@ -19,12 +18,20 @@
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Create new navigator instance (for root element).
+        /// </summary>
         public DesktopTreeXPathNavigator()
             : this(AutomationElement.RootElement)
         {
         }
 
-        internal DesktopTreeXPathNavigator(AutomationElement element)
+        /// <summary>
+        /// Create navigator instance for given automation element.
+        /// </summary>
+        /// <param name="element">Automation element.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DesktopTreeXPathNavigator(AutomationElement element)
         {
             if (element == null)
             {
@@ -34,7 +41,12 @@
             this.item = ElementItem.Create(element);
         }
 
-        internal DesktopTreeXPathNavigator(XPathItem item)
+        /// <summary>
+        /// Create navigator instance for given xpath element.
+        /// </summary>
+        /// <param name="item">XPath element.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DesktopTreeXPathNavigator(XPathItem item)
         {
             if (item == null)
             {
@@ -48,101 +60,62 @@
 
         #region Public Properties
 
-        public override string BaseURI
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        /// <inheritdoc/>
+        public override string BaseURI =>
+            string.Empty;
 
-        public override bool IsEmptyElement
-        {
-            get
-            {
-                return this.item.IsEmptyElement;
-            }
-        }
+        /// <inheritdoc/>
+        public override bool IsEmptyElement =>
+            this.item.IsEmptyElement;
 
-        public override string LocalName
-        {
-            get
-            {
-                return this.Name;
-            }
-        }
+        /// <inheritdoc/>
+        public override string LocalName =>
+            this.Name;
 
-        public override string Name
-        {
-            get
-            {
-                return this.item.Name;
-            }
-        }
+        /// <inheritdoc/>
+        public override string Name =>
+            this.item.Name;
 
-        public override XmlNameTable NameTable
-        {
-            get
-            {
-                return null;
-            }
-        }
+        /// <inheritdoc/>
+        public override XmlNameTable NameTable =>
+            null;
 
-        public override string NamespaceURI
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        /// <inheritdoc/>
+        public override string NamespaceURI =>
+            string.Empty;
 
-        public override XPathNodeType NodeType
-        {
-            get
-            {
-                return this.item.NodeType;
-            }
-        }
+        /// <inheritdoc/>
+        public override XPathNodeType NodeType =>
+            this.item.NodeType;
 
-        public override string Prefix
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        /// <inheritdoc/>
+        public override string Prefix =>
+            string.Empty;
 
-        public override object TypedValue
-        {
-            get
-            {
-                return this.item.TypedValue();
-            }
-        }
+        /// <inheritdoc/>
+        public override object TypedValue =>
+            this.item.TypedValue;
 
-        public override string Value
-        {
-            get
-            {
-                return this.item.Value;
-            }
-        }
+        /// <inheritdoc/>
+        public override string Value =>
+            this.item.Value;
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Public Methods
 
-        public override XPathNavigator Clone()
-        {
-            return new DesktopTreeXPathNavigator(this.item);
-        }
+        /// <inheritdoc/>
+        public override XPathNavigator Clone() =>
+            new DesktopTreeXPathNavigator(this.item);
 
+        /// <inheritdoc/>
         public override bool IsSamePosition(XPathNavigator other)
         {
             var obj = other as DesktopTreeXPathNavigator;
             return obj != null && obj.item.IsSamePosition(this.item);
         }
 
+        /// <inheritdoc/>
         public override bool MoveTo(XPathNavigator other)
         {
             var obj = other as DesktopTreeXPathNavigator;
@@ -155,50 +128,41 @@
             return true;
         }
 
-        public override bool MoveToFirstAttribute()
-        {
-            return this.MoveToItem(this.item.MoveToFirstProperty());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToFirstAttribute() =>
+            this.MoveToItem(this.item.MoveToFirstProperty());
 
-        public override bool MoveToFirstChild()
-        {
-            return this.MoveToItem(this.item.MoveToFirstChild());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToFirstChild() =>
+            this.MoveToItem(this.item.MoveToFirstChild());
 
-        public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope)
-        {
-            return false;
-        }
+        /// <inheritdoc/>
+        public override bool MoveToFirstNamespace(XPathNamespaceScope namespaceScope) =>
+            false;
 
-        public override bool MoveToId(string id)
-        {
-            return false;
-        }
+        /// <inheritdoc/>
+        public override bool MoveToId(string id) =>
+            false;
 
-        public override bool MoveToNext()
-        {
-            return this.MoveToItem(this.item.MoveToNext());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToNext() =>
+            this.MoveToItem(this.item.MoveToNext());
 
-        public override bool MoveToNextAttribute()
-        {
-            return this.MoveToItem(this.item.MoveToNextProperty());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToNextAttribute() =>
+            this.MoveToItem(this.item.MoveToNextProperty());
 
-        public override bool MoveToNextNamespace(XPathNamespaceScope namespaceScope)
-        {
-            return false;
-        }
+        /// <inheritdoc/>
+        public override bool MoveToNextNamespace(XPathNamespaceScope namespaceScope) =>
+            false;
 
-        public override bool MoveToParent()
-        {
-            return this.MoveToItem(this.item.MoveToParent());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToParent() =>
+            this.MoveToItem(this.item.MoveToParent());
 
-        public override bool MoveToPrevious()
-        {
-            return this.MoveToItem(this.item.MoveToPrevious());
-        }
+        /// <inheritdoc/>
+        public override bool MoveToPrevious() =>
+            this.MoveToItem(this.item.MoveToPrevious());
 
         #endregion
 

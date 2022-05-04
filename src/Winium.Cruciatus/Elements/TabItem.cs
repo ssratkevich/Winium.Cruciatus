@@ -1,32 +1,23 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Элемент вкладка. Требуется поддержка интерфейса SelectionItemPattern.
+    /// Represents Tab item.
     /// </summary>
     public class TabItem : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр вкладки. Поиск осуществится только при необходимости.
+        /// Creates tab item element.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public TabItem(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public TabItem(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -35,22 +26,17 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает значение, указывающее, выбрана ли вкладка.
+        /// Is tab selected.
         /// </summary>
-        public bool IsSelection
-        {
-            get
-            {
-                return this.GetAutomationPropertyValue<bool>(SelectionItemPattern.IsSelectedProperty);
-            }
-        }
+        public bool IsSelection =>
+            this.GetAutomationPropertyValue<bool>(SelectionItemPattern.IsSelectedProperty);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Выбирает вкладку текущей.
+        /// Select tab.
         /// </summary>
         public void Select()
         {

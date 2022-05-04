@@ -1,38 +1,60 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Collections.Generic;
+using System.Text;
+using System.Windows.Automation;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Collections.Generic;
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
-
+    /// <summary>
+    /// Conditions enum.
+    /// </summary>
     internal enum ConditionType
     {
-        None, 
-
-        Or, 
-
+        /// <summary>
+        /// No conditions
+        /// </summary>
+        None,
+        /// <summary>
+        /// Logical Or.
+        /// </summary>
+        Or,
+        /// <summary>
+        /// Logical And.
+        /// </summary>
         And
     }
 
+    /// <summary>
+    /// Search information for property, condition and value.
+    /// </summary>
     internal struct Info
     {
         #region Fields
 
+        /// <summary>
+        /// Condition type (None is default).
+        /// </summary>
         internal ConditionType ConditionType;
-
+        /// <summary>
+        /// Target property description.
+        /// </summary>
         internal AutomationProperty Property;
-
+        /// <summary>
+        /// Property value.
+        /// </summary>
         internal object Value;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Creates property info.
+        /// </summary>
+        /// <param name="property">Target property.</param>
+        /// <param name="value">Target property value.</param>
+        /// <param name="conditionType">Condition type.</param>
         internal Info(AutomationProperty property, object value, ConditionType conditionType)
         {
             this.Property = property;
@@ -44,20 +66,32 @@
     }
 
     /// <summary>
-    /// Класс-конструктор стратегии поиска элементов по AutomationProperty.
+    /// Element search strategy by automation property.
     /// </summary>
     public class ByProperty : By
     {
         #region Fields
 
+        /// <summary>
+        /// List of properties and conditions.
+        /// </summary>
         private readonly List<Info> infoList;
 
+        /// <summary>
+        /// Search scope.
+        /// </summary>
         private readonly TreeScope scope;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Creates simple property search strategy.
+        /// </summary>
+        /// <param name="scope">Search scope.</param>
+        /// <param name="property">Target property.</param>
+        /// <param name="value">Target property value.</param>
         internal ByProperty(TreeScope scope, AutomationProperty property, object value)
         {
             this.scope = scope;
@@ -66,18 +100,20 @@
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Public Methods
 
         /// <summary>
-        /// Уточнить поиск по AutomationProperty через логическое И. 
-        /// Требуется подключить ссылку на UIAutomationClient.
+        /// Add search condition with logical And operator.
         /// </summary>
         /// <param name="property">
-        /// Целевое свойство.
+        /// Target property.
         /// </param>
         /// <param name="value">
-        /// Значение целевого свойства.
+        /// Target property value.
         /// </param>
+        /// <returns>
+        /// Search strategy (for chaining).
+        /// </returns>
         public ByProperty And(AutomationProperty property, object value)
         {
             this.infoList.Add(new Info(property, value, ConditionType.And));
@@ -85,10 +121,10 @@
         }
 
         /// <summary>
-        /// Уточнить поиск по ControlType через логическое И.
+        /// Add search condition with logical And operator.
         /// </summary>
         /// <param name="value">
-        /// Тип элемента.
+        /// Element type.
         /// </param>
         public ByProperty AndType(ControlType value)
         {
@@ -97,15 +133,17 @@
         }
 
         /// <summary>
-        /// Уточнить поиск по AutomationProperty через логическое ИЛИ. 
-        /// Требуется подключить ссылку на UIAutomationClient.
+        /// Add search condition with logical Or operator.
         /// </summary>
         /// <param name="property">
-        /// Целевое свойство.
+        /// Target property.
         /// </param>
         /// <param name="value">
-        /// Значение целевого свойства.
+        /// Target property value.
         /// </param>
+        /// <returns>
+        /// Search strategy (for chaining).
+        /// </returns>
         public ByProperty Or(AutomationProperty property, object value)
         {
             this.infoList.Add(new Info(property, value, ConditionType.Or));
@@ -113,50 +151,57 @@
         }
 
         /// <summary>
-        /// Уточнить поиск по Name элемента через логическое ИЛИ.
+        /// Add search condition for element name with logical Or operator.
         /// </summary>
         /// <param name="value">
-        /// Имя элемента.
+        /// Element name.
         /// </param>
+        /// <returns>
+        /// Search strategy (for chaining).
+        /// </returns>
         public ByProperty OrName(string value)
         {
             this.Or(AutomationElement.NameProperty, value);
             return this;
         }
 
-        /// <summary>
-        /// Возвращает строковое представление стратегии поиска.
-        /// </summary>
+        /// <inheritdoc/>
         public override string ToString()
         {
+            StringBuilder builder = new();
             var info = this.infoList[0];
-            var str = AutomationPropertyHelper.GetPropertyName(info.Property) + ": " + info.Value;
+            builder.AppendFormat("{0}: {1}", AutomationPropertyHelper.GetPropertyName(info.Property), info.Value);
             for (var i = 1; i < this.infoList.Count; ++i)
             {
                 info = this.infoList[i];
-                var condition = info.ConditionType.ToString().ToLower();
-                var propertyName = AutomationPropertyHelper.GetPropertyName(info.Property);
-                var propertyKeyValue = propertyName + ": " + info.Value;
-                str = string.Format("({0}) {1} {2}", str, condition, propertyKeyValue);
+                builder.Insert(0, '(');
+                builder.Append(')');
+                builder.AppendFormat("{0} {1}: {2}",
+                    info.ConditionType.ToString().ToLower(),
+                    AutomationPropertyHelper.GetPropertyName(info.Property),
+                    info.Value);
             }
 
-            return str;
+            return builder.ToString();
         }
+
+        /// <inheritdoc/>
+        public override IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout) =>
+            AutomationElementHelper.FindAll(parent, this.scope, this.GetCondition(), timeout);
+
+        /// <inheritdoc/>
+        public override AutomationElement FindFirst(AutomationElement parent, int timeout) =>
+            AutomationElementHelper.FindFirst(parent, this.scope, this.GetCondition(), timeout);
 
         #endregion
 
-        #region Methods
+        #region Private methods
 
-        internal override IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout)
-        {
-            return AutomationElementHelper.FindAll(parent, this.scope, this.GetCondition(), timeout);
-        }
-
-        internal override AutomationElement FindFirst(AutomationElement parent, int timeout)
-        {
-            return AutomationElementHelper.FindFirst(parent, this.scope, this.GetCondition(), timeout);
-        }
-
+        /// <summary>
+        /// Constructs element search condition (simple or complex).
+        /// </summary>
+        /// <returns>Element search condition.</returns>
+        /// <exception cref="CruciatusException">Condition error.</exception>
         private Condition GetCondition()
         {
             var info = this.infoList[0];
@@ -165,19 +210,12 @@
             {
                 info = this.infoList[i];
                 var condition = new PropertyCondition(info.Property, info.Value);
-                switch (info.ConditionType)
+                result = info.ConditionType switch
                 {
-                    case ConditionType.And:
-                        result = new AndCondition(result, condition);
-                        break;
-
-                    case ConditionType.Or:
-                        result = new OrCondition(result, condition);
-                        break;
-
-                    default:
-                        throw new CruciatusException("ConditionType ERROR");
-                }
+                    ConditionType.And => new AndCondition(result, condition),
+                    ConditionType.Or => new OrCondition(result, condition),
+                    _ => throw new CruciatusException("ConditionType ERROR"),
+                };
             }
 
             return result;

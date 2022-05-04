@@ -1,20 +1,15 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Windows;
+using System.Windows.Forms;
+using WindowsInput;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Forms;
-
-    using WindowsInput;
-
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
 
     /// <summary>
-    /// Симулятор мыши. Обёртка над WindowsInput.MouseSimulator .
+    /// Mouse simulator (wrapper on WindowsInput.MouseSimulator).
     /// </summary>
     public class MouseSimulatorExt
     {
@@ -36,7 +31,7 @@
         #region Public Properties
 
         /// <summary>
-        /// Текущее положение курсора.
+        /// Cursor current position.
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Reviewed.")]
         public Point CurrentCursorPos
@@ -53,10 +48,10 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// Эмулирует клик в текущем положении курсора.
+        /// Emulates mouse click in current position.
         /// </summary>
         /// <param name="button">
-        /// Целевая кнопка.
+        /// Button key code.
         /// </param>
         public void Click(MouseButton button)
         {
@@ -72,16 +67,16 @@
         }
 
         /// <summary>
-        /// Эмулирует клик в заданные координаты.
+        /// Emulates click on given coords.
         /// </summary>
         /// <param name="button">
-        /// Целевая кнопка.
+        /// Mouse button key.
         /// </param>
         /// <param name="x">
-        /// Координата точки по оси X.
+        /// X coord.
         /// </param>
         /// <param name="y">
-        /// Координата точки по оси Y.
+        /// Y coord.
         /// </param>
         public void Click(MouseButton button, double x, double y)
         {
@@ -90,10 +85,10 @@
         }
 
         /// <summary>
-        /// Эмулирует двойной клик в текущем положении курсора.
+        /// Emulates mouse double click in current position.
         /// </summary>
         /// <param name="button">
-        /// Целевая кнопка.
+        /// Mouse button key.
         /// </param>
         public void DoubleClick(MouseButton button)
         {
@@ -109,16 +104,16 @@
         }
 
         /// <summary>
-        /// Эмулирует двойной клик в заданные точку.
+        /// Emulates mouse double click in given position.
         /// </summary>
         /// <param name="button">
-        /// Целевая кнопка.
+        /// Mouse button key.
         /// </param>
         /// <param name="x">
-        /// Координата точки по оси X.
+        /// X coord.
         /// </param>
         /// <param name="y">
-        /// Координата точки по оси Y.
+        /// Y coord.
         /// </param>
         public void DoubleClick(MouseButton button, double x, double y)
         {
@@ -127,7 +122,7 @@
         }
 
         /// <summary>
-        /// Эмулярует клик левой кнопки мыши в текущем положении курсора.
+        /// Emulates left mouse button click in current cursor position.
         /// </summary>
         public void LeftButtonClick()
         {
@@ -136,7 +131,7 @@
         }
 
         /// <summary>
-        /// Эмулярует двойной клик левой кнопки мыши в текущем положении курсора.
+        /// Emulates left mouse button double click in current cursor position.
         /// </summary>
         public void LeftButtonDoubleClick()
         {
@@ -145,22 +140,7 @@
         }
 
         /// <summary>
-        /// Перемещает курсор на заданное смещение по каждой координате.
-        /// </summary>
-        /// <param name="x">
-        /// Смещение по оси X (в пикселях).
-        /// </param>
-        /// <param name="y">
-        /// Смещение по оси Y (в пикселях).
-        /// </param>
-        public void MoveCursorPos(double x, double y)
-        {
-            var currentPoint = this.CurrentCursorPos;
-            this.SetCursorPos(currentPoint.X + x, currentPoint.Y + y);
-        }
-
-        /// <summary>
-        /// Эмулярует клик правой кнопки мыши в текущем положении курсора.
+        /// Emulates right mouse button click in current cursor position.
         /// </summary>
         public void RightButtonClick()
         {
@@ -169,7 +149,7 @@
         }
 
         /// <summary>
-        /// Эмулярует двойной клик правой кнопки мыши в текущем положении курсора.
+        /// Emulates right mouse button click in current cursor position.
         /// </summary>
         public void RightButtonDoubleClick()
         {
@@ -178,13 +158,13 @@
         }
 
         /// <summary>
-        /// Устанавливает курсор в заданную точку.
+        /// Sets cursor position to given point.
         /// </summary>
         /// <param name="x">
-        /// Координата точки по оси X.
+        /// X coord.
         /// </param>
         /// <param name="y">
-        /// Координата точки по оси Y.
+        /// Y coord.
         /// </param>
         public void SetCursorPos(double x, double y)
         {
@@ -194,14 +174,47 @@
         }
 
         /// <summary>
-        /// Эмулирует вертикальную прокрутку.
+        /// Moves the cursor for a given distance from its current position.
+        /// </summary>
+        /// <param name="x">
+        /// X coord (in pixels).
+        /// </param>
+        /// <param name="y">
+        /// Y coord (in pixels).
+        /// </param>
+        public void MoveCursorPos(double x, double y)
+        {
+            var currentPoint = this.CurrentCursorPos;
+            this.SetCursorPos(currentPoint.X + x, currentPoint.Y + y);
+        }
+
+        /// <summary>
+        /// Emulates vertical scroll.
         /// </summary>
         /// <param name="amountOfClicks">
-        /// Количество кручений в кликах. Положительное значение - вверх, отрицательное - вниз.
+        /// The amount to scroll in clicks.
+        /// A positive value indicates that the wheel was rotated forward,
+        /// away from the user;
+        /// a negative value indicates that the wheel was rotated backward,
+        /// toward the user.
         /// </param>
         public void VerticalScroll(int amountOfClicks)
         {
             this.mouseSimulator.VerticalScroll(amountOfClicks);
+            Thread.Sleep(250);
+        }
+
+        /// <summary>
+        /// Emulates horizontal scroll.
+        /// </summary>
+        /// <param name="amountOfClicks">
+        /// The amount to scroll in clicks.
+        /// A positive value indicates that the wheel was rotated to the right;
+        /// a negative value indicates that the wheel was rotated to the left.
+        /// </param>
+        public void HorizontalScroll(int amountOfClicks)
+        {
+            this.mouseSimulator.HorizontalScroll(amountOfClicks);
             Thread.Sleep(250);
         }
 

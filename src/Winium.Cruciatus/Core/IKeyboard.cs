@@ -1,80 +1,99 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using WindowsInput;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using WindowsInput;
-
-    #endregion
-
     /// <summary>
-    /// Интерфейс симулятора клавиатуры.
+    /// Keyboard simulator interface.
     /// </summary>
     public interface IKeyboard
     {
-        #region Public Methods and Operators
-
         /// <summary>
-        /// Эмулирует действие 'нажать и держать' над кнопкой.
+        /// Emulates pressing and holding button.
         /// </summary>
         /// <param name="keyCode">
-        /// Ключ целевой кнопки.
+        /// Button code.
         /// </param>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns>
         IKeyboard KeyDown(VirtualKeyCode keyCode);
 
         /// <summary>
-        /// Эмулирует действие 'отпустить' над кнопкой.
+        /// Emulates button release.
         /// </summary>
         /// <param name="keyCode">
-        /// Ключ целевой кнопки.
+        /// Button code.
         /// </param>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns>
         IKeyboard KeyUp(VirtualKeyCode keyCode);
 
         /// <summary>
-        /// Эмулирует действие 'нажать и отпустить' над кнопкой.
+         /// Emulates press and release button action.
         /// </summary>
         /// <param name="keyCode">
-        /// Ключ целевой кнопки.
+        /// Button code.
         /// </param>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns>
         IKeyboard KeyPress(VirtualKeyCode keyCode);
 
         /// <summary>
-        /// Эмулирует нажатие кнопки Backspace.
+        /// Emulates press and release Backspace button.
         /// </summary>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns>
         IKeyboard SendBackspace();
 
         /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + A.
+        /// Emulates Ctrl + A command.
         /// </summary>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns> 
         IKeyboard SendCtrlA();
 
         /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + C.
+        /// Emulates Ctrl + C command.
         /// </summary>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns> 
         IKeyboard SendCtrlC();
 
         /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + V.
+        /// Emulates Ctrl + V command.
         /// </summary>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns> 
         IKeyboard SendCtrlV();
 
         /// <summary>
-        /// Эмулирует нажатие кнопки Enter.
+        /// Emulates press and release Enter button.
         /// </summary>
         IKeyboard SendEnter();
 
         /// <summary>
-        /// Эмулирует нажатие кнопки Escape.
+        /// Emulates press and release Escape button.
         /// </summary>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns> 
         IKeyboard SendEscape();
 
         /// <summary>
-        /// Эмулирует ввод текста.
+        /// Emulates text entering.
         /// </summary>
         /// <param name="text">
-        /// Текст.
+        /// Text to enter.
         /// </param>
+        /// <returns>
+        /// Keyboard for chaining actions.
+        /// </returns>
         IKeyboard SendText(string text);
-
-        #endregion
     }
 }

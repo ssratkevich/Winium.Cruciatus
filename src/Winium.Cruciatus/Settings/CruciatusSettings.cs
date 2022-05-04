@@ -1,14 +1,10 @@
-﻿namespace Winium.Cruciatus.Settings
+﻿using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Settings.MessageBoxSettings;
+
+namespace Winium.Cruciatus.Settings
 {
-    #region using
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Settings.MessageBoxSettings;
-
-    #endregion
-
     /// <summary>
-    /// Класс настроек Cruciatus.
+    /// Cruciatus settings class.
     /// </summary>
     public class CruciatusSettings
     {
@@ -65,57 +61,57 @@
         #region Public Properties
 
         /// <summary>
-        /// Флаг автоматического снятия скриншотов. По умолчанию false.
+        /// Automatic srceenshot capture (default is false).
         /// </summary>
         public bool AutomaticScreenshotCapture { get; set; }
 
         /// <summary>
-        /// Кнопка для клика по умолчанию.
+        /// Default mouse click button.
         /// </summary>
         public MouseButton ClickButton { get; set; }
 
         /// <summary>
-        /// Информация о типе симулятора клавиатуры.
+        /// Keyboard simulator type.
         /// </summary>
         public KeyboardSimulatorType KeyboardSimulatorType { get; set; }
 
         /// <summary>
-        /// Информация о уникальных идентификаторах кнопок в диалоговом окне MessageBox.
+        /// MessageBox buttons ids.
         /// </summary>
         public MessageBoxButtonUid MessageBoxButtonUid { get; set; }
 
         /// <summary>
-        /// Информация о уникальных идентификаторах элементов в OpenFileDialog.
+        /// OpenFileDialog elements ids.
         /// </summary>
         public OpenFileDialogUid OpenFileDialogUid { get; set; }
 
         /// <summary>
-        /// Информация о уникальных идентификаторах элементов в SaveFileDialog.
+        /// SaveFileDialog elements ids.
         /// </summary>
         public SaveFileDialogUid SaveFileDialogUid { get; set; }
 
         /// <summary>
-        /// Директорию для сохранения скриншотов. По умолчанию './Screenshots'.
+        /// Srceenshots save directory (default is './Screenshots').
         /// </summary>
         public string ScreenshotsPath { get; set; }
 
         /// <summary>
-        /// Высота полосы прокрутки.
+        /// ScrollBar height.
         /// </summary>
         public int ScrollBarHeight { get; set; }
 
         /// <summary>
-        /// Ширина полосы прокрутки.
+        /// ScrollBar width.
         /// </summary>
         public int ScrollBarWidth { get; set; }
 
         /// <summary>
-        /// Время поиска элемента (миллисекунды).
+        /// Element search time threshold (milliseconds).
         /// </summary>
         public int SearchTimeout { get; set; }
 
         /// <summary>
-        /// Время ожидания завершения приложения (миллисекунды).
+        /// Application exit time threshold (milliseconds).
         /// </summary>
         public int WaitForExitTimeout { get; set; }
 
@@ -123,13 +119,11 @@
 
         #region Properties
 
-        internal static CruciatusSettings Instance
-        {
-            get
-            {
-                return instance ?? (instance = new CruciatusSettings());
-            }
-        }
+        /// <summary>
+        /// Globally available settings instance.
+        /// </summary>
+        internal static CruciatusSettings Instance => 
+            instance ??= new CruciatusSettings();
 
         #endregion
 

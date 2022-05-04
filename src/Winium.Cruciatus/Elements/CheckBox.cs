@@ -1,43 +1,32 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Extensions;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Extensions;
-
-    #endregion
-
     /// <summary>
-    /// Представляет элемент управления чекбокс.
+    /// Represents Check box element.
     /// </summary>
     public class CheckBox : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр чекбокса.
+        /// Creates new instance of CheckBox.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
+        /// <param name="element">Wrapped element.</param>
         public CheckBox(CruciatusElement element)
             : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр чекбокса. Поиск осуществится только при необходимости.
+        /// Creates new instance of CheckBox.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public CheckBox(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public CheckBox(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -46,34 +35,28 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает значение, указывающее, чекнут ли чекбокс.
+        /// Is checked property.
+        /// Actually must be bool? (null for intermediate state).
         /// </summary>
-        public bool IsToggleOn
-        {
-            get
-            {
-                return this.ToggleState == ToggleState.On;
-            }
-        }
+        public bool IsToggleOn =>
+            this.ToggleState == ToggleState.On;
 
         #endregion
 
         #region Properties
 
-        internal ToggleState ToggleState
-        {
-            get
-            {
-                return this.GetAutomationPropertyValue<ToggleState>(TogglePattern.ToggleStateProperty);
-            }
-        }
+        /// <summary>
+        /// Toggle state.
+        /// </summary>
+        internal ToggleState ToggleState =>
+            this.GetAutomationPropertyValue<ToggleState>(TogglePattern.ToggleStateProperty);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Устанавливает чекбокс в состояние чекнут.
+        /// Set to checked.
         /// </summary>
         public void Check()
         {
@@ -81,12 +64,13 @@
             {
                 return;
             }
+            // TODO: Use TogglePattern, because intermediate state is totally ignored.
 
             this.Click();
         }
 
         /// <summary>
-        /// Устанавливает чекбокс в состояние не чекнут.
+        /// Set to unchecked.
         /// </summary>
         public void Uncheck()
         {
@@ -94,6 +78,7 @@
             {
                 return;
             }
+            // TODO: Use TogglePattern, because intermediate state is totally ignored.
 
             this.Click();
         }

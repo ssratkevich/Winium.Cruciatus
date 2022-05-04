@@ -1,29 +1,25 @@
+using System;
+
 namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Перечисление поддерживаемых стратегий получения текста. Имеет атрибут Flags.
+    /// Element text getting strategies.
     /// </summary>
     [Flags]
     public enum GetTextStrategies
     {
         /// <summary>
-        /// Отсутствие определенной стратегии.
+        /// No stategy (try everything).
         /// </summary>
         None = 0, 
 
         /// <summary>
-        /// Стратегия использования интерфейса TextPattern.
+        /// Get text through automation element TextPattern.
         /// </summary>
-        TextPattern = 1, 
+        TextPattern = 1,
 
         /// <summary>
-        /// Стратегия использования интерфейса ValuePattern.
+        /// Get text through automation element ValuePattern.
         /// </summary>
         ValuePattern = 2
     }

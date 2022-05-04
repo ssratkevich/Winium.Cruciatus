@@ -1,17 +1,19 @@
-﻿namespace Winium.Cruciatus.Helpers.XPath
+﻿using System.Windows.Automation;
+using System.Xml.XPath;
+
+namespace Winium.Cruciatus.Helpers.XPath
 {
-    #region using
-
-    using System.Windows.Automation;
-    using System.Xml.XPath;
-
-    #endregion
-
-    internal class RootItem : ElementItem
+    /// <summary>
+    /// Root element.
+    /// </summary>
+    public class RootItem : ElementItem
     {
         #region Constructors and Destructors
 
-        internal RootItem()
+        /// <summary>
+        /// Create xpath element for desktop.
+        /// </summary>
+        public RootItem()
             : base(AutomationElement.RootElement)
         {
         }
@@ -20,48 +22,32 @@
 
         #region Properties
 
-        internal override bool IsEmptyElement
-        {
-            get
-            {
-                return false;
-            }
-        }
+        /// <inheritdoc/>
+        public override bool IsEmptyElement =>
+            false;
 
-        internal override string Name
-        {
-            get
-            {
-                return "Desktop Window";
-            }
-        }
+        /// <inheritdoc/>
+        public override string Name =>
+            "Desktop Window";
 
-        internal override XPathNodeType NodeType
-        {
-            get
-            {
-                return XPathNodeType.Root;
-            }
-        }
+        /// <inheritdoc/>
+        public override XPathNodeType NodeType =>
+            XPathNodeType.Root;
 
         #endregion
 
         #region Methods
 
-        internal override XPathItem MoveToNext()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToParent() =>
+            null;
 
-        internal override XPathItem MoveToParent()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToNext() =>
+            null;
 
-        internal override XPathItem MoveToPrevious()
-        {
-            return null;
-        }
+        /// <inheritdoc/>
+        public override XPathItem MoveToPrevious() => null;
 
         #endregion
     }

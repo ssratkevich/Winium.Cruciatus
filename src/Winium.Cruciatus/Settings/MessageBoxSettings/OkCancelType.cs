@@ -1,25 +1,21 @@
-﻿namespace Winium.Cruciatus.Settings.MessageBoxSettings
+﻿using System;
+
+namespace Winium.Cruciatus.Settings.MessageBoxSettings
 {
-    #region using
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    /// Класс описывающий набор из 2 кнопок - Ок и Отмена.
+    /// Ok, Cancel buttons descriptor class.
     /// </summary>
     public class OkCancelType : ICloneable
     {
         #region Public Properties
 
         /// <summary>
-        /// Уникальный идентификатор кнопки Отмена.
+        /// Cancel button UID.
         /// </summary>
         public string Cancel { get; set; }
 
         /// <summary>
-        /// Уникальный идентификатор кнопки Ок.
+        /// Ok button UID.
         /// </summary>
         public string Ok { get; set; }
 
@@ -27,10 +23,9 @@
 
         #region Public Methods and Operators
 
-        public object Clone()
-        {
-            return new OkCancelType { Ok = this.Ok, Cancel = this.Cancel };
-        }
+        /// <inheritdoc/>
+        public object Clone() =>
+            new OkCancelType { Ok = this.Ok, Cancel = this.Cancel };
 
         #endregion
     }

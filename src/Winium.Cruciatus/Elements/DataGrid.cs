@@ -1,45 +1,34 @@
-﻿namespace Winium.Cruciatus.Elements
+﻿using System.Windows.Automation;
+using Winium.Cruciatus.Core;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Extensions;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus.Elements
 {
-    #region using
-
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Core;
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Extensions;
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
-
     /// <summary>
-    /// Представляет элемент управления таблица.
+    /// Represents Data grid element.
     /// </summary>
     public class DataGrid : CruciatusElement
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Создает экземпляр таблицы. Поиск осуществится только при необходимости.
+        /// Creates new instance of data grid.
         /// </summary>
-        /// <param name="parent">
-        /// Родительский элемент.
-        /// </param>
-        /// <param name="getStrategy">
-        /// Стратегия поиска элемента.
-        /// </param>
-        public DataGrid(CruciatusElement parent, By getStrategy)
-            : base(parent, getStrategy)
+        /// <param name="element">Wrapped element.</param>
+        public DataGrid(CruciatusElement element)
+            : base(element)
         {
         }
 
         /// <summary>
-        /// Создает экземпляр таблицы.
+        /// Creates new instance of data grid.
         /// </summary>
-        /// <param name="element">
-        /// Исходный элемент.
-        /// </param>
-        public DataGrid(CruciatusElement element)
-            : base(element)
+        /// <param name="parent">Parent element.</param>
+        /// <param name="searchStrategy">Search strategy.</param>
+        public DataGrid(CruciatusElement parent, By searchStrategy)
+            : base(parent, searchStrategy)
         {
         }
 
@@ -48,43 +37,30 @@
         #region Public Properties
 
         /// <summary>
-        /// Возвращает количество столбцов в таблице.
+        /// Table columns count.
         /// </summary>
-        public int ColumnCount
-        {
-            get
-            {
-                return this.GetAutomationPropertyValue<int>(GridPattern.ColumnCountProperty);
-            }
-        }
+        public int ColumnCount =>
+            this.GetAutomationPropertyValue<int>(GridPattern.ColumnCountProperty);
 
         /// <summary>
-        /// Возвращает количество строк в таблице.
+        /// Table row count.
         /// </summary>
-        public int RowCount
-        {
-            get
-            {
-                return this.GetAutomationPropertyValue<int>(GridPattern.RowCountProperty);
-            }
-        }
+        public int RowCount =>
+            this.GetAutomationPropertyValue<int>(GridPattern.RowCountProperty);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Возвращает элемент ячейки, либо null, если он не найден.
+        /// Get first item in a cell.
         /// </summary>
-        /// <param name="row">
-        /// Номер строки.
-        /// </param>
-        /// <param name="column">
-        /// Номер колонки.
-        /// </param>
+        /// <param name="row">Row number.</param>
+        /// <param name="column">Column number.</param>
+        /// <returns>First item in a cell.</returns>
         public virtual CruciatusElement Item(int row, int column)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
@@ -104,10 +80,10 @@
                     new PropertyCondition(AutomationElement.IsGridItemPatternAvailableProperty, true), 
                     new PropertyCondition(GridItemPattern.RowProperty, row), 
                     new PropertyCondition(GridItemPattern.ColumnProperty, column));
-            var cell = AutomationElementHelper.FindFirst(this.Instance, TreeScope.Subtree, cellCondition);
+            var cell = AutomationElementHelper.FindFirst(this.Element, TreeScope.Subtree, cellCondition);
 
             // Проверка, что ячейку видно
-            if (cell == null || !this.Instance.ContainsClickablePoint(cell))
+            if (cell == null || !this.Element.ContainsClickablePoint(cell))
             {
                 Logger.Error("Cell [{1}, {2}] is not visible in DataGrid {0}.", this, row, column);
                 throw new CruciatusException("NOT GET ITEM");
@@ -121,21 +97,17 @@
                 throw new CruciatusException("NOT GET ITEM");
             }
 
-            return new CruciatusElement(null, elem, null);
+            return CruciatusElement.Create(elem, null, null);
         }
 
         /// <summary>
-        /// Прокручивает таблицу до ячейки.
+        /// Scrolls table to cell.
         /// </summary>
-        /// <param name="row">
-        /// Номер строки.
-        /// </param>
-        /// <param name="column">
-        /// Номер колонки.
-        /// </param>
+        /// <param name="row">Row number.</param>
+        /// <param name="column">Column number.</param>
         public virtual void ScrollTo(int row, int column)
         {
-            if (!this.Instance.Current.IsEnabled)
+            if (!this.Element.Current.IsEnabled)
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
@@ -150,7 +122,7 @@
                 throw new CruciatusException("NOT SCROLL");
             }
 
-            var scrollPattern = this.Instance.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
+            var scrollPattern = this.Element.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
             if (scrollPattern == null)
             {
                 Logger.Error("{0} does not support ScrollPattern.", this.ToString());
@@ -164,7 +136,7 @@
                     new PropertyCondition(GridItemPattern.RowProperty, row));
 
             // Стартовый поиск ячейки
-            var cell = AutomationElementHelper.FindFirst(this.Instance, TreeScope.Subtree, cellCondition);
+            var cell = AutomationElementHelper.FindFirst(this.Element, TreeScope.Subtree, cellCondition);
 
             // Вертикальная прокрутка (при необходимости и возможности)
             if (cell == null && scrollPattern.Current.VerticallyScrollable)
@@ -188,7 +160,7 @@
                 while (cell == null && scrollPattern.Current.VerticalScrollPercent < 99.9)
                 {
                     scrollPattern.ScrollVertical(ScrollAmount.LargeIncrement);
-                    cell = AutomationElementHelper.FindFirst(this.Instance, TreeScope.Subtree, cellCondition);
+                    cell = AutomationElementHelper.FindFirst(this.Element, TreeScope.Subtree, cellCondition);
                 }
             }
 
@@ -200,13 +172,13 @@
             }
 
             // Если точка клика ячейки [row, 0] под границей таблицы - докручиваем по вертикали вниз
-            while (cell.ClickablePointUnder(this.Instance, scrollPattern))
+            while (cell.ClickablePointUnder(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика ячейки [row, 0] над границей таблицы - докручиваем по вертикали вверх
-            while (cell.ClickablePointOver(this.Instance))
+            while (cell.ClickablePointOver(this.Element))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
             }
@@ -219,7 +191,7 @@
                     new PropertyCondition(GridItemPattern.ColumnProperty, column));
 
             // Стартовый поиск ячейки
-            cell = AutomationElementHelper.FindFirst(this.Instance, TreeScope.Subtree, cellCondition);
+            cell = AutomationElementHelper.FindFirst(this.Element, TreeScope.Subtree, cellCondition);
 
             // Основная горизонтальная прокрутка (при необходимости и возможности)
             if (cell == null && scrollPattern.Current.HorizontallyScrollable)
@@ -227,7 +199,7 @@
                 while (cell == null && scrollPattern.Current.HorizontalScrollPercent < 99.9)
                 {
                     scrollPattern.ScrollHorizontal(ScrollAmount.LargeIncrement);
-                    cell = AutomationElementHelper.FindFirst(this.Instance, TreeScope.Subtree, cellCondition);
+                    cell = AutomationElementHelper.FindFirst(this.Element, TreeScope.Subtree, cellCondition);
                 }
             }
 
@@ -239,27 +211,23 @@
             }
 
             // Если точка клика ячейки [row, column] справа от границы таблицы - докручиваем по горизонтали вправо
-            while (cell.ClickablePointRight(this.Instance, scrollPattern))
+            while (cell.ClickablePointRight(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика ячейки [row, column] слева от границы таблицы - докручиваем по горизонтали влево
-            while (cell.ClickablePointLeft(this.Instance))
+            while (cell.ClickablePointLeft(this.Element))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
             }
         }
 
         /// <summary>
-        /// Выбирает ячейку.
+        /// Select cell.
         /// </summary>
-        /// <param name="row">
-        /// Номер строки.
-        /// </param>
-        /// <param name="column">
-        /// Номер колонки.
-        /// </param>
+        /// <param name="row">Row number.</param>
+        /// <param name="column">Column number.</param>
         public virtual void SelectCell(int row, int column)
         {
             var cell = this.Item(row, column);

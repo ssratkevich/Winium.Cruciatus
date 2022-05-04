@@ -1,18 +1,13 @@
-﻿namespace Winium.Cruciatus.Extensions
+﻿using System;
+using System.Windows;
+using System.Windows.Automation;
+using Winium.Cruciatus.Exceptions;
+using Winium.Cruciatus.Helpers;
+
+namespace Winium.Cruciatus.Extensions
 {
-    #region using
-
-    using System;
-    using System.Windows;
-    using System.Windows.Automation;
-
-    using Winium.Cruciatus.Exceptions;
-    using Winium.Cruciatus.Helpers;
-
-    #endregion
-
     /// <summary>
-    /// Набор расширений для объектов AutomationElement.
+    /// Extensions for <see cref="AutomationElement"/>.
     /// </summary>
     internal static class AutomationElementExtension
     {
@@ -28,8 +23,7 @@
         {
             try
             {
-                Point point;
-                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out point))
+                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out var point))
                 {
                     if (!AutomationElementHelper.TryGetBoundingRectangleCenter(currentElement, out point))
                     {
@@ -51,8 +45,7 @@
         {
             try
             {
-                Point point;
-                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out point))
+                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out var point))
                 {
                     if (!AutomationElementHelper.TryGetBoundingRectangleCenter(currentElement, out point))
                     {
@@ -77,8 +70,7 @@
         {
             try
             {
-                Point point;
-                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out point))
+                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out var point))
                 {
                     if (!AutomationElementHelper.TryGetBoundingRectangleCenter(currentElement, out point))
                     {
@@ -108,8 +100,7 @@
         {
             try
             {
-                Point point;
-                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out point))
+                if (!AutomationElementHelper.TryGetClickablePoint(currentElement, out var point))
                 {
                     if (!AutomationElementHelper.TryGetBoundingRectangleCenter(currentElement, out point))
                     {
@@ -138,8 +129,7 @@
         {
             try
             {
-                Point point;
-                if (!AutomationElementHelper.TryGetClickablePoint(internalElement, out point))
+                if (!AutomationElementHelper.TryGetClickablePoint(internalElement, out var point))
                 {
                     if (!AutomationElementHelper.TryGetBoundingRectangleCenter(internalElement, out point))
                     {

@@ -1,19 +1,17 @@
-﻿namespace Winium.Cruciatus.Helpers.XPath
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Automation;
+using System.Xml.XPath;
+using Winium.Cruciatus.Elements;
+using Winium.Cruciatus.Exceptions;
+
+namespace Winium.Cruciatus.Helpers.XPath
 {
-    #region using
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows.Automation;
-    using System.Xml.XPath;
-
-    using Winium.Cruciatus.Elements;
-    using Winium.Cruciatus.Exceptions;
-
-    #endregion
-
-    internal class ElementItem : XPathItem
+    /// <summary>
+    /// Element class.
+    /// </summary>
+    public class ElementItem : XPathItem
     {
         #region Fields
 
@@ -27,7 +25,12 @@
 
         #region Constructors and Destructors
 
-        internal ElementItem(AutomationElement element)
+        /// <summary>
+        /// Create new xpath element from automation element.
+        /// </summary>
+        /// <param name="element">Automation element.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ElementItem(AutomationElement element)
         {
             if (element == null)
             {
@@ -41,7 +44,8 @@
 
         #region Properties
 
-        internal override bool IsEmptyElement
+        /// <inheritdoc/>
+        public override bool IsEmptyElement
         {
             get
             {
@@ -53,7 +57,7 @@
 
                 try
                 {
-                    new CruciatusElement(null, this.element, null).Text();
+                    CruciatusElement.Create(this.element, null, null).Text();
                     return false;
                 }
                 catch (CruciatusException)
@@ -63,98 +67,101 @@
             }
         }
 
-        internal override string Name
-        {
-            get
-            {
-                return this.element.Current.Name;
-            }
-        }
+        /// <inheritdoc/>
+        public override string Name =>
+            this.element.Current.Name;
 
-        internal override XPathNodeType NodeType
-        {
-            get
-            {
-                return XPathNodeType.Element;
-            }
-        }
+        /// <inheritdoc/>
+        public override XPathNodeType NodeType =>
+            XPathNodeType.Element;
 
-        internal List<AutomationProperty> SupportedProperties
-        {
-            get
-            {
-                return this.properties ?? (this.properties = this.element.GetSupportedProperties().ToList());
-            }
-        }
+        /// <inheritdoc/>
+        public override object TypedValue =>
+            this.element;
 
-        #endregion
-
-        #region Public Methods and Operators
-
-        public override object TypedValue()
-        {
-            return this.element;
-        }
-
+        /// <summary>
+        /// Supported properties.
+        /// </summary>
+        public List<AutomationProperty> SupportedProperties =>
+            this.properties ??= this.element.GetSupportedProperties().ToList();
+            
         #endregion
 
         #region Methods
 
-        internal static XPathItem Create(AutomationElement instance)
-        {
-            return instance.Equals(AutomationElement.RootElement) ? new RootItem() : new ElementItem(instance);
-        }
+        /// <summary>
+        /// Create xpath element from automation one.
+        /// </summary>
+        /// <param name="instance">Automation element.</param>
+        /// <returns></returns>
+        public static XPathItem Create(AutomationElement instance) =>
+            instance.Equals(AutomationElement.RootElement)
+            ? new RootItem()
+            : new ElementItem(instance);
 
-        internal AutomationProperty GetNextPropertyOrNull(AutomationProperty property)
+        /// <summary>
+        /// Get next property if it exists.
+        /// </summary>
+        /// <param name="property">Property.</param>
+        /// <returns>Next property if it exists.</returns>
+        public AutomationProperty GetNextPropertyOrNull(AutomationProperty property)
         {
             var index = this.SupportedProperties.IndexOf(property);
             return this.SupportedProperties.ElementAtOrDefault(index + 1);
         }
 
-        internal object GetPropertyValue(AutomationProperty property)
-        {
-            return this.element.GetCurrentPropertyValue(property);
-        }
+        /// <summary>
+        /// Get value of the property.
+        /// </summary>
+        /// <param name="property">Property.</param>
+        /// <returns>Value of the property.</returns>
+        public object GetPropertyValue(AutomationProperty property) =>
+            this.element.GetCurrentPropertyValue(property);
 
-        internal override bool IsSamePosition(XPathItem item)
+        /// <inheritdoc/>
+        public override bool IsSamePosition(XPathItem item)
         {
             var obj = item as ElementItem;
             return obj != null && obj.element.Equals(this.element);
         }
 
-        internal override XPathItem MoveToFirstChild()
-        {
-            var firstChild = this.treeWalker.GetFirstChild(this.element);
-            return (firstChild == null) ? null : Create(firstChild);
-        }
-
-        internal override XPathItem MoveToFirstProperty()
-        {
-            return this.SupportedProperties.Any() ? new PropertyItem(this, this.SupportedProperties[0]) : null;
-        }
-
-        internal override XPathItem MoveToNext()
-        {
-            var next = this.treeWalker.GetNextSibling(this.element);
-            return (next == null) ? null : Create(next);
-        }
-
-        internal override XPathItem MoveToNextProperty()
-        {
-            return null;
-        }
-
-        internal override XPathItem MoveToParent()
+        /// <inheritdoc/>
+        public override XPathItem MoveToParent()
         {
             var parent = this.treeWalker.GetParent(this.element);
             return (parent == null) ? null : Create(parent);
         }
 
-        internal override XPathItem MoveToPrevious()
+        /// <inheritdoc/>
+        public override XPathItem MoveToFirstChild()
+        {
+            var firstChild = this.treeWalker.GetFirstChild(this.element);
+            return (firstChild == null) ? null : Create(firstChild);
+        }
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToNext()
+        {
+            var next = this.treeWalker.GetNextSibling(this.element);
+            return (next == null) ? null : Create(next);
+        }
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToPrevious()
         {
             var previous = this.treeWalker.GetPreviousSibling(this.element);
             return (previous == null) ? null : Create(previous);
         }
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToFirstProperty() =>
+            this.SupportedProperties.Any()
+            ? new PropertyItem(this, this.SupportedProperties[0])
+            : null;
+
+        /// <inheritdoc/>
+        public override XPathItem MoveToNextProperty() =>
+            null;
 
         #endregion
     }

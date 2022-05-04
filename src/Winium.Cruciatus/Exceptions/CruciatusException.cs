@@ -1,14 +1,10 @@
-﻿namespace Winium.Cruciatus.Exceptions
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Winium.Cruciatus.Exceptions
 {
-    #region using
-
-    using System;
-    using System.Runtime.Serialization;
-
-    #endregion
-
     /// <summary>
-    /// Исключение фреймворка Cruciatus.
+    /// Cruciatus exception base class.
     /// </summary>
     [Serializable]
     public class CruciatusException : Exception
@@ -16,30 +12,33 @@
         #region Constructors and Destructors
 
         /// <summary>
-        /// Конструктор по умолчанию.
+        /// Creates new exception.
         /// </summary>
         public CruciatusException()
         {
         }
 
         /// <summary>
-        /// Параметризованный конструктор.
+        /// Creates new exception with given message.
         /// </summary>
+        /// <param name="message">Exception message.</param>
         public CruciatusException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Параметризованный конструктор.
+        /// Creates new exception with given message and inner exception.
         /// </summary>
+        /// <param name="message">Exception message.</param>
+        /// <param name="innerException">Inner exception.</param>
         public CruciatusException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Параметризованный конструктор.
+        /// Creates new exception with given context.
         /// </summary>
         protected CruciatusException(SerializationInfo info, StreamingContext context)
             : base(info, context)

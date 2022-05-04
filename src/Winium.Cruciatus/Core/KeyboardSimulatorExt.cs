@@ -1,17 +1,11 @@
-﻿namespace Winium.Cruciatus.Core
+﻿using System.Threading;
+using NLog;
+using WindowsInput;
+
+namespace Winium.Cruciatus.Core
 {
-    #region using
-
-    using System.Threading;
-
-    using NLog;
-
-    using WindowsInput;
-
-    #endregion
-
     /// <summary>
-    /// Симулятор клавиатуры. Обёртка над WindowsInput.KeyboardSimulator .
+    /// WindowsInput.KeyboardSimulator keyboard simulator.
     /// </summary>
     public class KeyboardSimulatorExt : IKeyboard
     {
@@ -27,20 +21,15 @@
 
         internal KeyboardSimulatorExt(IKeyboardSimulator keyboardSimulator, Logger logger)
         {
-            this.logger = logger;
             this.keyboardSimulator = keyboardSimulator;
+            this.logger = logger;
         }
 
         #endregion
 
         #region Public Methods and Operators
 
-        /// <summary>
-        /// Эмулирует действие 'нажать и держать' над кнопкой.
-        /// </summary>
-        /// <param name="keyCode">
-        /// Ключ целевой кнопки.
-        /// </param>
+        /// <inheritdoc/>
         public IKeyboard KeyDown(VirtualKeyCode keyCode)
         {
             this.logger.Info("Key down '{0}'", keyCode.ToString());
@@ -49,12 +38,7 @@
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует действие 'нажать и отпустить' над кнопкой.
-        /// </summary>
-        /// <param name="keyCode">
-        /// Ключ целевой кнопки.
-        /// </param>
+        /// <inheritdoc/>
         public IKeyboard KeyPress(VirtualKeyCode keyCode)
         {
             this.logger.Info("Key press '{0}'", keyCode.ToString());
@@ -63,15 +47,7 @@
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие сочетания двух кнопок keyCode1 + keyCode2.
-        /// </summary>
-        /// <param name="keyCode1">
-        /// Ключ первой целевой кнопки.
-        /// </param>
-        /// <param name="keyCode2">
-        /// Ключ второй целевой кнопки.
-        /// </param>
+        /// <inheritdoc/>
         public void KeyPressSimultaneous(VirtualKeyCode keyCode1, VirtualKeyCode keyCode2)
         {
             this.logger.Info("Press key combo '{0} + {1}'", keyCode1, keyCode2);
@@ -80,16 +56,16 @@
         }
 
         /// <summary>
-        /// Эмулирует нажатие сочетания трёх кнопок keyCode1 + keyCode2 + keyCode3.
+        /// Emulates simultaneous three keys press command.
         /// </summary>
         /// <param name="keyCode1">
-        /// Ключ первой целевой кнопки.
+        /// First key code.
         /// </param>
         /// <param name="keyCode2">
-        /// Ключ второй целевой кнопки.
+        /// Second key code.
         /// </param>
         /// <param name="keyCode3">
-        /// Ключ третьей целевой кнопки.
+        /// Third key code.
         /// </param>
         public void KeyPressSimultaneous(VirtualKeyCode keyCode1, VirtualKeyCode keyCode2, VirtualKeyCode keyCode3)
         {
@@ -98,12 +74,7 @@
             Thread.Sleep(250);
         }
 
-        /// <summary>
-        /// Эмулирует действие 'отпустить' над кнопкой.
-        /// </summary>
-        /// <param name="keyCode">
-        /// Ключ целевой кнопки.
-        /// </param>
+        /// <inheritdoc/>
         public IKeyboard KeyUp(VirtualKeyCode keyCode)
         {
             this.logger.Info("Key up '{0}'", keyCode.ToString());
@@ -112,66 +83,49 @@
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие кнопки Backspace.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendBackspace()
         {
             this.KeyPress(VirtualKeyCode.BACK);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + A.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendCtrlA()
         {
             this.KeyPressSimultaneous(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + C.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendCtrlC()
         {
             this.KeyPressSimultaneous(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие сочетания кнопок Ctrl + V.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendCtrlV()
         {
             this.KeyPressSimultaneous(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие кнопки Enter.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendEnter()
         {
             this.KeyPress(VirtualKeyCode.RETURN);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует нажатие кнопки Escape.
-        /// </summary>
+        /// <inheritdoc/>
         public IKeyboard SendEscape()
         {
             this.KeyPress(VirtualKeyCode.ESCAPE);
             return this;
         }
 
-        /// <summary>
-        /// Эмулирует ввод текста.
-        /// </summary>
-        /// <param name="text">
-        /// Текст.
-        /// </param>
+        /// <inheritdoc/>
         public IKeyboard SendText(string text)
         {
             this.logger.Info("Send text '{0}'", text);
