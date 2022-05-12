@@ -172,13 +172,13 @@ namespace Winium.Cruciatus.Elements
             }
 
             // Если точка клика ячейки [row, 0] под границей таблицы - докручиваем по вертикали вниз
-            while (cell.ClickablePointUnder(this.Element, scrollPattern))
+            while (cell.IsClickablePointLower(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика ячейки [row, 0] над границей таблицы - докручиваем по вертикали вверх
-            while (cell.ClickablePointOver(this.Element))
+            while (cell.IsClickablePointUpper(this.Element))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
             }
@@ -211,13 +211,13 @@ namespace Winium.Cruciatus.Elements
             }
 
             // Если точка клика ячейки [row, column] справа от границы таблицы - докручиваем по горизонтали вправо
-            while (cell.ClickablePointRight(this.Element, scrollPattern))
+            while (cell.IsClickablePointOnRight(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика ячейки [row, column] слева от границы таблицы - докручиваем по горизонтали влево
-            while (cell.ClickablePointLeft(this.Element))
+            while (cell.IsClickablePointOnLeft(this.Element))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
             }

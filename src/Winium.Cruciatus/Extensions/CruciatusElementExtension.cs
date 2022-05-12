@@ -72,6 +72,24 @@ namespace Winium.Cruciatus.Extensions
             element.Element.GetPattern<T>(pattern);
 
         /// <summary>
+        /// Try to get required automation pattern.
+        /// </summary>
+        /// <param name="element">Element.</param>
+        /// <param name="pattern">Required automation pattern (ex: ExpandCollapsePattern.Pattern).</param>
+        /// <typeparam name="T">Pattern type.</typeparam>
+        /// <returns>Automation pattern or null, if element not support pattern.</returns>
+        public static T TryGetPattern<T>(this CruciatusElement element, AutomationPattern pattern) where T : class =>
+            element.Element.TryGetPattern<T>(pattern);
+
+        /// <summary>
+        /// Scroll given item into view.
+        /// </summary>
+        /// <param name="element">Target element.</param>
+        /// <param name="scrollableParent">Scrollable parent (optional, but recommended).</param>
+        public static void ScrollIntoView(this CruciatusElement element, CruciatusElement scrollableParent = null) =>
+            element.Element.ScrollIntoView(scrollableParent?.Element);
+
+        /// <summary>
         /// Convert to <see cref="CheckBox"/>.
         /// </summary>
         /// <returns><see cref="CheckBox"/></returns>

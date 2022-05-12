@@ -91,25 +91,25 @@ namespace Winium.Cruciatus.Elements
             }
 
             // Если точка клика элемента под границей списка - докручиваем по вертикали вниз
-            while (element.Element.ClickablePointUnder(this.Element, scrollPattern))
+            while (element.Element.IsClickablePointLower(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
-            while (element.Element.ClickablePointOver(this.Element))
+            while (element.Element.IsClickablePointUpper(this.Element))
             {
                 scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
             }
 
             // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
-            while (element.Element.ClickablePointRight(this.Element, scrollPattern))
+            while (element.Element.IsClickablePointOnRight(this.Element, scrollPattern))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
             }
 
             // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
-            while (element.Element.ClickablePointLeft(this.Element))
+            while (element.Element.IsClickablePointOnLeft(this.Element))
             {
                 scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
             }

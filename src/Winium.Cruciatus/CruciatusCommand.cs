@@ -131,11 +131,10 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            object basePattern;
-            if (element.Element.TryGetCurrentPattern(InvokePattern.Pattern, out basePattern))
+            var invokePattern = element.Element.TryGetPattern<InvokePattern>(InvokePattern.Pattern);
+            if (invokePattern != null)
             {
                 string cmd;
-                var invokePattern = (InvokePattern)basePattern;
                 if (doubleClick)
                 {
                     invokePattern.Invoke();
@@ -163,16 +162,12 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            object pattern;
-            if (element.Element.TryGetCurrentPattern(TextPattern.Pattern, out pattern))
+            var textPattern = element.Element.TryGetPattern<TextPattern>(TextPattern.Pattern);
+            if (textPattern != null)
             {
-                var textPattern = pattern as TextPattern;
-                if (textPattern != null)
-                {
-                    text = textPattern.DocumentRange.GetText(-1);
-                    Logger.Info("Element '{0}' return text using TextPattern", element);
-                    return true;
-                }
+                text = textPattern.DocumentRange.GetText(-1);
+                Logger.Info("Element '{0}' return text using TextPattern", element);
+                return true;
             }
 
             Logger.Debug("Element '{0}' not support TextPattern", element);
@@ -187,16 +182,12 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            object pattern;
-            if (element.Element.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
+            var valuePattern = element.Element.TryGetPattern<ValuePattern>(ValuePattern.Pattern);
+            if (valuePattern != null)
             {
-                var valuePattern = pattern as ValuePattern;
-                if (valuePattern != null)
-                {
-                    Logger.Info("Element '{0}' return text with use ValuePattern", element);
-                    text = valuePattern.Current.Value;
-                    return true;
-                }
+                Logger.Info("Element '{0}' return text with use ValuePattern", element);
+                text = valuePattern.Current.Value;
+                return true;
             }
 
             Logger.Debug("Element '{0}' not support ValuePattern", element);
