@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Automation;
 
 namespace Winium.Cruciatus.Core
@@ -37,10 +38,23 @@ namespace Winium.Cruciatus.Core
         /// ClickablePoint property.
         /// Warning: Could be null.
         /// </summary>
-        public Point? ClickablePoint =>
-            this.element.TryGetClickablePoint(out var point)
-            ? point
-            : new Point?();
+        public Point? ClickablePoint
+        {
+            get
+            {
+                Point? point;
+                try
+                {
+                    this.element.TryGetClickablePoint(out var p);
+                    point = p;
+                }
+                catch (Exception ex)
+                {
+                    point = null;
+                }
+                return point;
+            }
+        }
 
         /// <summary>
         /// IsEnabled property.

@@ -96,7 +96,6 @@ namespace Winium.Cruciatus
             {
                 throw new ArgumentNullException("element");
             }
-
             var point = element.Properties.ClickablePoint;
             if (!point.HasValue)
             {
