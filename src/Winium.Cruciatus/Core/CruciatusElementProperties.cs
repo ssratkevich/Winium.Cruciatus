@@ -9,24 +9,15 @@ namespace Winium.Cruciatus.Core
     /// </summary>
     public class CruciatusElementProperties
     {
-        #region Fields
         /// <summary>
         /// Wrapped automation element.
         /// </summary>
         private readonly AutomationElement element;
 
-        #endregion
-
-        #region Constructors and Destructors
-
         internal CruciatusElementProperties(AutomationElement element)
         {
             this.element = element;
         }
-
-        #endregion
-
-        #region Public Properties
 
         /// <summary>
         /// BoundingRectangle property.
@@ -42,11 +33,13 @@ namespace Winium.Cruciatus.Core
         {
             get
             {
-                Point? point;
+                Point? point = null;
                 try
                 {
-                    this.element.TryGetClickablePoint(out var p);
-                    point = p;
+                    if (this.element.TryGetClickablePoint(out var p))
+                    {
+                        point = p;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -79,7 +72,5 @@ namespace Winium.Cruciatus.Core
         /// </summary>
         public string RuntimeId =>
             string.Join(" ", this.element.GetRuntimeId());
-
-        #endregion
     }
 }
