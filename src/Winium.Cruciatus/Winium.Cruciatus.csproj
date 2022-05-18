@@ -2,19 +2,22 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
+    <LangVersion>latest</LangVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <Authors>ssratkevich, 2gis</Authors>
-    <Description>C# Framework for automated testing of Windows application based on WinForms and WPF platforms.</Description>
-    <Copyright>Copyright © 2022</Copyright>
-    <Title>Winium.Cruciatus</Title>
-    <Product>Winium.Cruciatus automation helper C# library.</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Syntellect.Winium.Cruciatus</PackageId>
     <Version>3.0.0.0</Version>
-    <FileVersion>3.0.0.*</FileVersion>
+    <Title>Winium.Cruciatus</Title>
+    <Description>C# Framework for Windows applications automated testing.</Description>
+    <Product>Winium.Cruciatus automation helper C# library.</Product>
+    <Authors>Syntellect, ssratkevich, 2gis</Authors>
+    <Copyright>Copyright © 2022</Copyright>
     <PackageProjectUrl>https://github.com/ssratkevich/Winium.Cruciatus</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ssratkevich/Winium.Cruciatus</RepositoryUrl>
     <PackageTags>C# Automation</PackageTags>
@@ -22,6 +25,7 @@
     <PackageIcon>LogoSmall.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug\Winium.Cruciatus.xml</DocumentationFile>
@@ -34,15 +38,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="H.InputSimulator" Version="1.2.6" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.7.15</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.310801">
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
   </ItemGroup>
