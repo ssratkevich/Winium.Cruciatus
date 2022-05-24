@@ -20,7 +20,7 @@
     <Copyright>Copyright © 2022</Copyright>
     <PackageProjectUrl>https://github.com/ssratkevich/Winium.Cruciatus</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ssratkevich/Winium.Cruciatus</RepositoryUrl>
-    <PackageTags>C# Automation</PackageTags>
+    <PackageTags>C# Automation Cruciatus Winium Selenium</PackageTags>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageIcon>LogoSmall.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
