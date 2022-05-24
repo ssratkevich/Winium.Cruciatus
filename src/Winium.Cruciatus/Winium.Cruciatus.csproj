@@ -28,10 +28,11 @@
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\Winium.Cruciatus.xml</DocumentationFile>
+     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DocumentationFile>bin\Release\Winium.Cruciatus.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="CruciatusRuleSet.ruleset" />
