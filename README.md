@@ -1,8 +1,8 @@
 # Winium.Cruciatus
-[![Inner Server NuGet downloads](https://img.shields.io/nuget/dt/Winium.Cruciatus.svg?style=flat-square)](https://www.nuget.org/packages/Winium.Cruciatus/)
-[![Inner Server NuGet version](https://img.shields.io/nuget/v/Winium.Cruciatus.svg?style=flat-square)](https://www.nuget.org/packages/Winium.Cruciatus/)
+[![Inner Server NuGet downloads](https://img.shields.io/nuget/dt/Syntellect.Winium.Cruciatus.svg?style=flat-square)](https://www.nuget.org/packages/Syntellect.Winium.Cruciatus/)
+[![Inner Server NuGet version](https://img.shields.io/nuget/v/Syntellect.Winium.Cruciatus.svg?style=flat-square)](https://www.nuget.org/packages/Syntellect.Winium.Cruciatus/)
 
-![Logo](Logo.png)
+![Logo](https://github.com/ssratkevich/Winium.Cruciatus/blob/master/Logo.png)
 
 This is fork of [2gis Cruciatus project](https://github.com/2gis/Winium.Cruciatus). 
 The goal of this fork is to actualize project to current state of .NET world, extend and support,
