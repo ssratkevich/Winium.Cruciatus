@@ -1,8 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows;
-using Point = System.Drawing.Point;
 
 namespace Winium.Cruciatus.Core
 {
@@ -16,10 +14,10 @@ namespace Winium.Cruciatus.Core
         {
             byte[] imageBytes;
             var rect = new Rectangle(
-                (int)SystemParameters.VirtualScreenLeft, 
-                (int)SystemParameters.VirtualScreenTop, 
-                (int)SystemParameters.VirtualScreenWidth, 
-                (int)SystemParameters.VirtualScreenHeight);
+                (int)System.Windows.SystemParameters.VirtualScreenLeft, 
+                (int)System.Windows.SystemParameters.VirtualScreenTop, 
+                (int)System.Windows.SystemParameters.VirtualScreenWidth, 
+                (int)System.Windows.SystemParameters.VirtualScreenHeight);
             using (var bitmap = new Bitmap(rect.Width, rect.Height))
             {
                 using (var graphics = Graphics.FromImage(bitmap))

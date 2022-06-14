@@ -1,4 +1,4 @@
-﻿using System.Windows.Automation;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Extensions;
 
@@ -38,14 +38,14 @@ namespace Winium.Cruciatus.Elements
         /// Gets Cancel button
         /// </summary>
         public CruciatusElement CancelButton =>
-            this.FindElement(By.Uid(TreeScope.Children,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Children,
                 CruciatusFactory.Settings.SaveFileDialogUid.CancelButton));
             
         /// <summary>
         /// Gets file name combo box.
         /// </summary>
         public ComboBox FileNameComboBox =>
-            this.FindElement(By.Uid(TreeScope.Subtree,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Subtree,
                 CruciatusFactory.Settings.SaveFileDialogUid.FileNameEditableComboBox))
             .ToComboBox();
 
@@ -53,7 +53,7 @@ namespace Winium.Cruciatus.Elements
         /// Gets file type combo box.
         /// </summary>
         public ComboBox FileTypeComboBox =>
-            this.FindElement(By.Uid(TreeScope.Subtree,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Subtree,
                 CruciatusFactory.Settings.SaveFileDialogUid.FileTypeComboBox))
             .ToComboBox();
 
@@ -61,7 +61,7 @@ namespace Winium.Cruciatus.Elements
         /// Gets Save button.
         /// </summary>
         public CruciatusElement SaveButton =>
-            this.FindElement(By.Uid(TreeScope.Children,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Children,
                 CruciatusFactory.Settings.SaveFileDialogUid.SaveButton));
 
         #endregion

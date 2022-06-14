@@ -1,7 +1,8 @@
-﻿using System;
-using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
+using System;
 using System.Xml;
 using System.Xml.XPath;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Helpers.XPath
 {
@@ -22,7 +23,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// Create new navigator instance (for root element).
         /// </summary>
         public DesktopTreeXPathNavigator()
-            : this(AutomationElement.RootElement)
+            : this(Automation::AutomationElement.RootElement)
         {
         }
 
@@ -31,7 +32,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="element">Automation element.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DesktopTreeXPathNavigator(AutomationElement element)
+        public DesktopTreeXPathNavigator(Automation::AutomationElement element)
         {
             if (element == null)
             {

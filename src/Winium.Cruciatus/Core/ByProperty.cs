@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿extern alias UIAComWrapper;
+using System.Collections.Generic;
 using System.Text;
-using System.Windows.Automation;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Helpers;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Core
 {
@@ -39,7 +41,7 @@ namespace Winium.Cruciatus.Core
         /// <summary>
         /// Target property description.
         /// </summary>
-        internal AutomationProperty Property;
+        internal Automation::AutomationProperty Property;
         /// <summary>
         /// Property value.
         /// </summary>
@@ -55,7 +57,7 @@ namespace Winium.Cruciatus.Core
         /// <param name="property">Target property.</param>
         /// <param name="value">Target property value.</param>
         /// <param name="conditionType">Condition type.</param>
-        internal Info(AutomationProperty property, object value, ConditionType conditionType)
+        internal Info(Automation::AutomationProperty property, object value, ConditionType conditionType)
         {
             this.Property = property;
             this.Value = value;
@@ -92,7 +94,7 @@ namespace Winium.Cruciatus.Core
         /// <param name="scope">Search scope.</param>
         /// <param name="property">Target property.</param>
         /// <param name="value">Target property value.</param>
-        internal ByProperty(TreeScope scope, AutomationProperty property, object value)
+        internal ByProperty(TreeScope scope, Automation::AutomationProperty property, object value)
         {
             this.scope = scope;
             this.infoList = new List<Info> { new Info(property, value, ConditionType.None) };
@@ -114,7 +116,7 @@ namespace Winium.Cruciatus.Core
         /// <returns>
         /// Search strategy (for chaining).
         /// </returns>
-        public ByProperty And(AutomationProperty property, object value)
+        public ByProperty And(Automation::AutomationProperty property, object value)
         {
             this.infoList.Add(new Info(property, value, ConditionType.And));
             return this;
@@ -126,9 +128,9 @@ namespace Winium.Cruciatus.Core
         /// <param name="value">
         /// Element type.
         /// </param>
-        public ByProperty AndType(ControlType value)
+        public ByProperty AndType(Automation::ControlType value)
         {
-            this.And(AutomationElement.ControlTypeProperty, value);
+            this.And(Automation::AutomationElement.ControlTypeProperty, value);
             return this;
         }
 
@@ -144,7 +146,7 @@ namespace Winium.Cruciatus.Core
         /// <returns>
         /// Search strategy (for chaining).
         /// </returns>
-        public ByProperty Or(AutomationProperty property, object value)
+        public ByProperty Or(Automation::AutomationProperty property, object value)
         {
             this.infoList.Add(new Info(property, value, ConditionType.Or));
             return this;
@@ -161,7 +163,7 @@ namespace Winium.Cruciatus.Core
         /// </returns>
         public ByProperty OrName(string value)
         {
-            this.Or(AutomationElement.NameProperty, value);
+            this.Or(Automation::AutomationElement.NameProperty, value);
             return this;
         }
 
@@ -186,11 +188,11 @@ namespace Winium.Cruciatus.Core
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout) =>
+        public override IEnumerable<Automation::AutomationElement> FindAll(Automation::AutomationElement parent, int timeout) =>
             AutomationElementHelper.FindAll(parent, this.scope, this.GetCondition(), timeout);
 
         /// <inheritdoc/>
-        public override AutomationElement FindFirst(AutomationElement parent, int timeout) =>
+        public override Automation::AutomationElement FindFirst(Automation::AutomationElement parent, int timeout) =>
             AutomationElementHelper.FindFirst(parent, this.scope, this.GetCondition(), timeout);
 
         #endregion
@@ -202,18 +204,18 @@ namespace Winium.Cruciatus.Core
         /// </summary>
         /// <returns>Element search condition.</returns>
         /// <exception cref="CruciatusException">Condition error.</exception>
-        private Condition GetCondition()
+        private Automation::Condition GetCondition()
         {
             var info = this.infoList[0];
-            Condition result = new PropertyCondition(info.Property, info.Value);
+            Automation::Condition result = new Automation::PropertyCondition(info.Property, info.Value);
             for (var i = 1; i < this.infoList.Count; ++i)
             {
                 info = this.infoList[i];
-                var condition = new PropertyCondition(info.Property, info.Value);
+                var condition = new Automation::PropertyCondition(info.Property, info.Value);
                 result = info.ConditionType switch
                 {
-                    ConditionType.And => new AndCondition(result, condition),
-                    ConditionType.Or => new OrCondition(result, condition),
+                    ConditionType.And => new Automation::AndCondition(result, condition),
+                    ConditionType.Or => new Automation::OrCondition(result, condition),
                     _ => throw new CruciatusException("ConditionType ERROR"),
                 };
             }

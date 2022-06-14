@@ -1,6 +1,7 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
+using System;
+using System.Drawing;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Core
 {
@@ -12,9 +13,9 @@ namespace Winium.Cruciatus.Core
         /// <summary>
         /// Wrapped automation element.
         /// </summary>
-        private readonly AutomationElement element;
+        private readonly Automation::AutomationElement element;
 
-        internal CruciatusElementProperties(AutomationElement element)
+        internal CruciatusElementProperties(Automation::AutomationElement element)
         {
             this.element = element;
         }
@@ -22,7 +23,7 @@ namespace Winium.Cruciatus.Core
         /// <summary>
         /// BoundingRectangle property.
         /// </summary>
-        public Rect BoundingRectangle =>
+        public Rectangle BoundingRectangle =>
             this.element.Current.BoundingRectangle;
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace Winium.Cruciatus.Core
                         point = p;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     point = null;
                 }

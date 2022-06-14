@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿extern alias UIAComWrapper;
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Automation;
 using Winium.Cruciatus.Helpers;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Core
 {
@@ -39,11 +40,11 @@ namespace Winium.Cruciatus.Core
             this.xpath;
 
         /// <inheritdoc/>
-        public override IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout) =>
+        public override IEnumerable<Automation::AutomationElement> FindAll(Automation::AutomationElement parent, int timeout) =>
             AutomationElementHelper.FindAll(parent, this.xpath, timeout);
 
         /// <inheritdoc/>
-        public override AutomationElement FindFirst(AutomationElement parent, int timeout) =>
+        public override Automation::AutomationElement FindFirst(Automation::AutomationElement parent, int timeout) =>
             AutomationElementHelper.FindAll(parent, this.xpath, timeout).FirstOrDefault();
 
         #endregion

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
+using System;
+using System.Drawing;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Helpers;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Extensions
 {
     /// <summary>
-    /// Extensions for <see cref="AutomationElement"/>.
+    /// Extensions for <see cref="Automation::AutomationElement"/>.
     /// </summary>
     internal static class AutomationElementExtension
     {
@@ -27,8 +29,8 @@ namespace Winium.Cruciatus.Extensions
         /// <returns>True if element is on left of a container.</returns>
         /// <exception cref="OperationCanceledException"></exception>
         internal static bool IsClickablePointOnLeft(
-            this AutomationElement currentElement,
-            AutomationElement rectElement)
+            this Automation::AutomationElement currentElement,
+            Automation::AutomationElement rectElement)
         {
             try
             {
@@ -37,7 +39,7 @@ namespace Winium.Cruciatus.Extensions
                     throw new OperationCanceledException(OperationCanceledExceptionText);
                 }
 
-                var rect = rectElement.GetPropertyValue<Rect>(AutomationElement.BoundingRectangleProperty);
+                var rect = rectElement.GetPropertyValue<Rectangle>(Automation::AutomationElement.BoundingRectangleProperty);
 
                 return point.X < rect.Left;
             }
@@ -48,8 +50,8 @@ namespace Winium.Cruciatus.Extensions
         }
 
         internal static bool IsClickablePointUpper(
-            this AutomationElement currentElement,
-            AutomationElement rectElement)
+            this Automation::AutomationElement currentElement,
+            Automation::AutomationElement rectElement)
         {
             try
             {
@@ -58,7 +60,7 @@ namespace Winium.Cruciatus.Extensions
                     throw new OperationCanceledException(OperationCanceledExceptionText);
                 }
 
-                var rect = rectElement.GetPropertyValue<Rect>(AutomationElement.BoundingRectangleProperty);
+                var rect = rectElement.GetPropertyValue<Rectangle>(Automation::AutomationElement.BoundingRectangleProperty);
 
                 return point.Y < rect.Top;
             }
@@ -69,9 +71,9 @@ namespace Winium.Cruciatus.Extensions
         }
 
         internal static bool IsClickablePointOnRight(
-            this AutomationElement currentElement, 
-            AutomationElement rectElement, 
-            ScrollPattern scrollPattern)
+            this Automation::AutomationElement currentElement,
+            Automation::AutomationElement rectElement,
+            Automation::ScrollPattern scrollPattern)
         {
             try
             {
@@ -80,7 +82,7 @@ namespace Winium.Cruciatus.Extensions
                     throw new OperationCanceledException(OperationCanceledExceptionText);
                 }
 
-                var rect = rectElement.GetPropertyValue<Rect>(AutomationElement.BoundingRectangleProperty);
+                var rect = rectElement.GetPropertyValue<Rectangle>(Automation::AutomationElement.BoundingRectangleProperty);
 
                 if (scrollPattern == null || scrollPattern.Current.HorizontalScrollPercent < 0)
                 {
@@ -96,9 +98,9 @@ namespace Winium.Cruciatus.Extensions
         }
 
         internal static bool IsClickablePointLower(
-            this AutomationElement currentElement, 
-            AutomationElement rectElement, 
-            ScrollPattern scrollPattern)
+            this Automation::AutomationElement currentElement,
+            Automation::AutomationElement rectElement,
+            Automation::ScrollPattern scrollPattern)
         {
             try
             {
@@ -107,7 +109,7 @@ namespace Winium.Cruciatus.Extensions
                     throw new OperationCanceledException(OperationCanceledExceptionText);
                 }
 
-                var rect = rectElement.GetPropertyValue<Rect>(AutomationElement.BoundingRectangleProperty);
+                var rect = rectElement.GetPropertyValue<Rectangle>(Automation::AutomationElement.BoundingRectangleProperty);
 
                 if (scrollPattern == null || scrollPattern.Current.HorizontalScrollPercent < 0)
                 {
@@ -123,8 +125,8 @@ namespace Winium.Cruciatus.Extensions
         }
 
         internal static bool ContainsClickablePoint(
-            this AutomationElement containerElement, 
-            AutomationElement internalElement)
+            this Automation::AutomationElement containerElement,
+            Automation::AutomationElement internalElement)
         {
             try
             {
@@ -133,7 +135,7 @@ namespace Winium.Cruciatus.Extensions
                     throw new OperationCanceledException(OperationCanceledExceptionText);
                 }
 
-                var externalRect = containerElement.GetPropertyValue<Rect>(AutomationElement.BoundingRectangleProperty);
+                var externalRect = containerElement.GetPropertyValue<Rectangle>(Automation::AutomationElement.BoundingRectangleProperty);
 
                 return externalRect.Contains(point);
             }
@@ -151,13 +153,13 @@ namespace Winium.Cruciatus.Extensions
         /// <param name="element">Target element.</param>
         /// <param name="point">Clicable point.</param>
         /// <returns>True if operation is success.</returns>
-        internal static bool TryGetElementCenterPoint(this AutomationElement element, out Point point) =>
+        internal static bool TryGetElementCenterPoint(this Automation::AutomationElement element, out Point point) =>
             AutomationElementHelper.TryGetClickablePoint(element, out point) ||
             AutomationElementHelper.TryGetBoundingRectangleCenter(element, out point);
 
-        internal static void ScrollIntoView(this AutomationElement element, AutomationElement scrollableParent = null)
+        internal static void ScrollIntoView(this Automation::AutomationElement element, Automation::AutomationElement scrollableParent = null)
         {
-            var scrollItemPattern = element.TryGetPattern<ScrollItemPattern>(ScrollItemPattern.Pattern);
+            var scrollItemPattern = element.TryGetPattern<Automation::ScrollItemPattern>(Automation::ScrollItemPattern.Pattern);
             if (scrollItemPattern != null)
             {
                 scrollItemPattern.ScrollIntoView();
@@ -167,7 +169,7 @@ namespace Winium.Cruciatus.Extensions
             {
                 throw new CruciatusException("No scrollable parent given.");
             }
-            var scrollPattern = scrollableParent.TryGetPattern<ScrollPattern>(ScrollPattern.Pattern);
+            var scrollPattern = scrollableParent.TryGetPattern<Automation::ScrollPattern>(Automation::ScrollPattern.Pattern);
             if (scrollPattern == null)
             {
                 throw new CruciatusException("Given element doesn't support scrollable pattern.");
@@ -178,13 +180,13 @@ namespace Winium.Cruciatus.Extensions
                 // Если точка клика элемента под границей списка - докручиваем по вертикали вниз
                 while (element.IsClickablePointLower(scrollableParent, scrollPattern))
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_SmallIncrement);
                 }
 
                 // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
                 while (element.IsClickablePointUpper(scrollableParent))
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_SmallDecrement);
                 }
             }
 
@@ -193,13 +195,13 @@ namespace Winium.Cruciatus.Extensions
                 // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
                 while (element.IsClickablePointOnRight(scrollableParent, scrollPattern))
                 {
-                    scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
+                    scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_SmallIncrement);
                 }
 
                 // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
                 while (element.IsClickablePointOnLeft(scrollableParent))
                 {
-                    scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
+                    scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_SmallDecrement);
                 }
             }
 
@@ -209,7 +211,7 @@ namespace Winium.Cruciatus.Extensions
             }
         }
 
-        internal static T GetPattern<T>(this AutomationElement element, AutomationPattern pattern) where T : class
+        internal static T GetPattern<T>(this Automation::AutomationElement element, Automation::AutomationPattern pattern) where T : class
         {
             if (element.TryGetCurrentPattern(pattern, out var foundPattern))
             {
@@ -220,13 +222,13 @@ namespace Winium.Cruciatus.Extensions
             throw new CruciatusException(msg);
         }
 
-        internal static T TryGetPattern<T>(this AutomationElement element, AutomationPattern pattern) where T: class =>
+        internal static T TryGetPattern<T>(this Automation::AutomationElement element, Automation::AutomationPattern pattern) where T: class =>
             element.TryGetCurrentPattern(pattern, out var foundPattern) ? (T) foundPattern : null;
         
-        internal static TOut GetPropertyValue<TOut>(this AutomationElement element, AutomationProperty property)
+        internal static TOut GetPropertyValue<TOut>(this Automation::AutomationElement element, Automation::AutomationProperty property)
         {
             var obj = element.GetCurrentPropertyValue(property, true);
-            if (obj == AutomationElement.NotSupported)
+            if (obj == Automation::AutomationElement.NotSupported)
             {
                 throw new NotSupportedException();
             }

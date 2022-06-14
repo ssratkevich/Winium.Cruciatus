@@ -1,4 +1,4 @@
-﻿using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -7,6 +7,7 @@ using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Settings;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus
 {
@@ -44,7 +45,7 @@ namespace Winium.Cruciatus
         /// Get the focused element.
         /// </summary>
         public static CruciatusElement FocusedElement =>
-            CruciatusElement.Create(AutomationElement.FocusedElement, null, null);
+            CruciatusElement.Create(Automation::AutomationElement.FocusedElement, null, null);
 
         /// <summary>
         /// Get the current keyboard simulator.
@@ -68,7 +69,7 @@ namespace Winium.Cruciatus
         /// Get the root element for Desktop.
         /// </summary>
         public static CruciatusElement Root =>
-            CruciatusElement.Create(AutomationElement.RootElement, null, null);
+            CruciatusElement.Create(Automation::AutomationElement.RootElement, null, null);
             
         /// <summary>
         /// Get the screenshoter.

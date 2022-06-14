@@ -1,5 +1,6 @@
-﻿using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
 using System.Xml.XPath;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Helpers.XPath
 {
@@ -12,7 +13,7 @@ namespace Winium.Cruciatus.Helpers.XPath
 
         private readonly ElementItem parent;
 
-        private readonly AutomationProperty property;
+        private readonly Automation::AutomationProperty property;
 
         #endregion
 
@@ -23,7 +24,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="parent">Parent element.</param>
         /// <param name="property">Property.</param>
-        public PropertyItem(ElementItem parent, AutomationProperty property)
+        public PropertyItem(ElementItem parent, Automation::AutomationProperty property)
         {
             this.parent = parent;
             this.property = property;
@@ -51,7 +52,7 @@ namespace Winium.Cruciatus.Helpers.XPath
             get
             {
                 var value = this.TypedValue;
-                var type = value as ControlType;
+                var type = value as Automation::ControlType;
                 return type != null ? type.ProgrammaticName : value.ToString();
             }
         }

@@ -1,5 +1,6 @@
-﻿using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
 using System.Xml.XPath;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Helpers.XPath
 {
@@ -14,7 +15,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// Create xpath element for desktop.
         /// </summary>
         public RootItem()
-            : base(AutomationElement.RootElement)
+            : base(Automation::AutomationElement.RootElement)
         {
         }
 

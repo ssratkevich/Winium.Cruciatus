@@ -1,9 +1,11 @@
-﻿using System.Threading;
+extern alias UIAComWrapper;
 using System.Linq;
-using System.Windows.Automation;
+using System.Threading;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Extensions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Elements
 {
@@ -41,7 +43,7 @@ namespace Winium.Cruciatus.Elements
         /// ComboBox is in expanded state.
         /// </summary>
         public bool IsExpanded =>
-            this.ExpandCollapseState == ExpandCollapseState.Expanded;
+            this.ExpandCollapseState == ExpandCollapseState.ExpandCollapseState_Expanded;
 
         #endregion
 
@@ -52,7 +54,7 @@ namespace Winium.Cruciatus.Elements
         /// </summary>
         internal ExpandCollapseState ExpandCollapseState =>
             this.GetAutomationPropertyValue<ExpandCollapseState>(
-                ExpandCollapsePattern.ExpandCollapseStateProperty);
+                Automation::ExpandCollapsePattern.ExpandCollapseStateProperty);
 
         #endregion
 
@@ -70,7 +72,7 @@ namespace Winium.Cruciatus.Elements
         /// <param name="strategy">Strategy.</param>
         public void Collapse(ExpandStrategy strategy)
         {
-            if (this.ExpandCollapseState == ExpandCollapseState.Collapsed)
+            if (this.ExpandCollapseState == ExpandCollapseState.ExpandCollapseState_Collapsed)
             {
                 return;
             }
@@ -81,7 +83,7 @@ namespace Winium.Cruciatus.Elements
                     this.Click();
                     break;
                 case ExpandStrategy.ExpandCollapsePattern:
-                    this.Element.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Collapse();
+                    this.Element.GetPattern<Automation::ExpandCollapsePattern>(Automation::ExpandCollapsePattern.Pattern).Collapse();
                     break;
                 default:
                     Logger.Error("{0} is not valid or implemented collapse strategy.", strategy);
@@ -103,7 +105,7 @@ namespace Winium.Cruciatus.Elements
         /// <param name="strategy">Strategy.</param>
         public void Expand(ExpandStrategy strategy)
         {
-            if (this.ExpandCollapseState == ExpandCollapseState.Expanded)
+            if (this.ExpandCollapseState == ExpandCollapseState.ExpandCollapseState_Expanded)
             {
                 return;
             }
@@ -114,7 +116,7 @@ namespace Winium.Cruciatus.Elements
                     this.Click();
                     break;
                 case ExpandStrategy.ExpandCollapsePattern:
-                    this.Element.GetPattern<ExpandCollapsePattern>(ExpandCollapsePattern.Pattern).Expand();
+                    this.Element.GetPattern<Automation::ExpandCollapsePattern>(Automation::ExpandCollapsePattern.Pattern).Expand();
                     break;
                 default:
                     Logger.Error("{0} is not valid or implemented expand strategy.", strategy);
@@ -135,17 +137,17 @@ namespace Winium.Cruciatus.Elements
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
-                throw new ElementNotEnabledException("NOT SCROLL");
+                throw new Automation::ElementNotEnabledException("NOT SCROLL");
             }
 
             // Проверка, что выпадающий список раскрыт
-            if (this.ExpandCollapseState != ExpandCollapseState.Expanded)
+            if (this.ExpandCollapseState != ExpandCollapseState.ExpandCollapseState_Expanded)
             {
                 Logger.Error("Element {0} is not opened.", this);
                 throw new CruciatusException("NOT SCROLL");
             }
 
-            var scrollPattern = this.Element.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
+            var scrollPattern = this.Element.GetCurrentPattern(Automation::ScrollPattern.Pattern) as Automation::ScrollPattern;
             if (scrollPattern == null)
             {
                 Logger.Error("{0} does not support ScrollPattern.", this);
@@ -161,7 +163,7 @@ namespace Winium.Cruciatus.Elements
                 // Установка самого верхнего положения прокрутки
                 while (scrollPattern.Current.VerticalScrollPercent > 0.1)
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.LargeDecrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_LargeDecrement);
                 }
 
                 // Установка самого левого положения прокрутки (при возможности)
@@ -169,14 +171,14 @@ namespace Winium.Cruciatus.Elements
                 {
                     while (scrollPattern.Current.HorizontalScrollPercent > 0.1)
                     {
-                        scrollPattern.ScrollHorizontal(ScrollAmount.LargeDecrement);
+                        scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_LargeDecrement);
                     }
                 }
 
                 // Основная вертикальная прокрутка
                 while (element == null && scrollPattern.Current.VerticalScrollPercent < 99.9)
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.LargeIncrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_LargeIncrement);
                     element = CruciatusCommand.FindFirst(this, getStrategy, 1000);
                 }
             }
@@ -189,8 +191,8 @@ namespace Winium.Cruciatus.Elements
             }
 
             var strategy =
-                By.AutomationProperty(TreeScope.Subtree, AutomationElement.ClassNameProperty, "Popup")
-                    .And(AutomationElement.ProcessIdProperty, this.Element.Current.ProcessId);
+                By.AutomationProperty(TreeScope.TreeScope_Subtree, Automation::AutomationElement.ClassNameProperty, "Popup")
+                    .And(Automation::AutomationElement.ProcessIdProperty, this.Element.Current.ProcessId);
             var popupWindow = CruciatusFactory.Root.FindElement(strategy);
             if (popupWindow == null)
             {
@@ -202,25 +204,25 @@ namespace Winium.Cruciatus.Elements
             var popupWindowInstance = popupWindow.Element;
             while (element.Element.IsClickablePointLower(popupWindowInstance, scrollPattern))
             {
-                scrollPattern.ScrollVertical(ScrollAmount.LargeIncrement);
+                scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_LargeIncrement);
             }
 
             // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
             while (element.Element.IsClickablePointUpper(popupWindowInstance))
             {
-                scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
+                scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_SmallDecrement);
             }
 
             // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
             while (element.Element.IsClickablePointOnRight(popupWindowInstance, scrollPattern))
             {
-                scrollPattern.ScrollHorizontal(ScrollAmount.LargeIncrement);
+                scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_LargeIncrement);
             }
 
             // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
             while (element.Element.IsClickablePointOnLeft(popupWindowInstance))
             {
-                scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
+                scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_SmallDecrement);
             }
 
             return element;
@@ -235,9 +237,9 @@ namespace Winium.Cruciatus.Elements
             if (this.IsExpanded)
             {
                 return this.FindElement(
-                    By.AutomationProperty(TreeScope.Subtree, SelectionItemPattern.IsSelectedProperty, true));
+                    By.AutomationProperty(TreeScope.TreeScope_Subtree, Automation::SelectionItemPattern.IsSelectedProperty, true));
             }
-            var pattern = this.GetPattern<SelectionPattern>(SelectionPattern.Pattern);
+            var pattern = this.GetPattern<Automation::SelectionPattern>(Automation::SelectionPattern.Pattern);
             var element = pattern.Current.GetSelection().FirstOrDefault();
             return element != null ? Create(element, this, null) : null;
         }
