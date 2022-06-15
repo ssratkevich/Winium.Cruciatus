@@ -82,7 +82,10 @@ namespace Winium.Cruciatus.Elements
             {
                 throw new InvalidOperationException($"Invalid operation. Either {nameof(element)} or {nameof(parent)} and {nameof(searchStrategy)} must be provided.");
             }
-            this.Element = element;
+            this.element = element;
+            // this is for Automation inicialization.
+            this.EnshureAutomationInitialized();
+
             this.Parent = parent;
             this.SearchStrategy = searchStrategy;
         }
@@ -114,6 +117,8 @@ namespace Winium.Cruciatus.Elements
                 {
                     var element = this.Parent.FindElement(this.SearchStrategy);
                     this.element = element != null ? element.Element : null;
+                    // this is for Automation inicialization.
+                    this.EnshureAutomationInitialized();
                 }
 
                 if (this.element == null)
@@ -459,6 +464,19 @@ namespace Winium.Cruciatus.Elements
                 string.IsNullOrEmpty(uid) ? string.Empty : ", uid: " + uid, 
                 string.IsNullOrEmpty(name) ? string.Empty : ", name: " + name);
             return str;
+        }
+
+        /// <summary>
+        /// Magic method to ensure Automation initialized within UIAComWrapper.
+        /// </summary>
+        public void EnshureAutomationInitialized()
+        {
+            try
+            {
+                _ = this.element?.Current.Name;
+            }
+            catch(Exception)
+            { }
         }
 
         #endregion

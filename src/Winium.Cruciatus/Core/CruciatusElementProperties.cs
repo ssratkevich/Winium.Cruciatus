@@ -34,19 +34,22 @@ namespace Winium.Cruciatus.Core
         {
             get
             {
-                Point? point = null;
-                try
-                {
-                    if (this.element.TryGetClickablePoint(out var p))
-                    {
-                        point = p;
-                    }
-                }
-                catch (Exception)
-                {
-                    point = null;
-                }
-                return point;
+                // Bounding rectangle more stable...
+                // so using it instead actual clicable point.
+                var rect = this.BoundingRectangle;
+                return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+                //try
+                //{
+                //    if(this.element.TryGetClickablePoint(out var point))
+                //    {
+                //        this.CheckClickablePointValid(point);
+                //        return point;
+                //    }
+                //}
+                //catch (Exception)
+                //{
+                //}
+                //return null;
             }
         }
 
@@ -73,5 +76,14 @@ namespace Winium.Cruciatus.Core
         /// </summary>
         public string RuntimeId =>
             string.Join(" ", this.element.GetRuntimeId());
+
+        private void CheckClickablePointValid(Point point)
+        {
+            var rect = this.BoundingRectangle;
+            if (!rect.Contains(point))
+            {
+                throw new InvalidOperationException("Point is invalid.");
+            }
+        }
     }
 }

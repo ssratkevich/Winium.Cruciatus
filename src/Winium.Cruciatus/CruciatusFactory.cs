@@ -32,6 +32,7 @@ namespace Winium.Cruciatus
 
         static CruciatusFactory()
         {
+            InitAutomation();
             LoggerInit();
             InputSimulatorsInit();
             ScreenshotersInit();
@@ -107,6 +108,11 @@ namespace Winium.Cruciatus
         #endregion
 
         #region Methods
+
+        private static void InitAutomation()
+        {
+            _ = Automation::AutomationElement.RootElement.Current.Name;
+        }
 
         private static void InputSimulatorsInit()
         {
