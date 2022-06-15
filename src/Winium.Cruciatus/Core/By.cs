@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
+using System.Collections.Generic;
+using Interop.UIAutomationClient;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Core
 {
@@ -20,9 +22,9 @@ namespace Winium.Cruciatus.Core
         /// <returns>
         /// Search strategy.
         /// </returns>
-        public static ByProperty AutomationProperty(AutomationProperty property, object value)
+        public static ByProperty AutomationProperty(Automation::AutomationProperty property, object value)
         {
-            return AutomationProperty(TreeScope.Subtree, property, value);
+            return AutomationProperty(TreeScope.TreeScope_Subtree, property, value);
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace Winium.Cruciatus.Core
         /// <returns>
         /// Search strategy.
         /// </returns> 
-        public static ByProperty AutomationProperty(TreeScope scope, AutomationProperty property, object value)
+        public static ByProperty AutomationProperty(TreeScope scope, Automation::AutomationProperty property, object value)
         {
             return new ByProperty(scope, property, value);
         }
@@ -56,7 +58,7 @@ namespace Winium.Cruciatus.Core
         /// </returns> 
         public static ByProperty Name(string value)
         {
-            return AutomationProperty(AutomationElement.NameProperty, value);
+            return AutomationProperty(Automation::AutomationElement.NameProperty, value);
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Winium.Cruciatus.Core
         /// </returns> 
         public static ByProperty Name(TreeScope scope, string value)
         {
-            return AutomationProperty(scope, AutomationElement.NameProperty, value);
+            return AutomationProperty(scope, Automation::AutomationElement.NameProperty, value);
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace Winium.Cruciatus.Core
         /// </returns> 
         public static ByProperty Uid(string value)
         {
-            return AutomationProperty(AutomationElement.AutomationIdProperty, value);
+            return AutomationProperty(Automation::AutomationElement.AutomationIdProperty, value);
         }
 
         /// <summary>
@@ -104,7 +106,7 @@ namespace Winium.Cruciatus.Core
         /// </returns> 
         public static ByProperty Uid(TreeScope scope, string value)
         {
-            return AutomationProperty(scope, AutomationElement.AutomationIdProperty, value);
+            return AutomationProperty(scope, Automation::AutomationElement.AutomationIdProperty, value);
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace Winium.Cruciatus.Core
         /// <param name="parent">Starting element.</param>
         /// <param name="timeout">Search time threshold.</param>
         /// <returns>Collection of found elements (may be null).</returns>
-        public abstract IEnumerable<AutomationElement> FindAll(AutomationElement parent, int timeout);
+        public abstract IEnumerable<Automation::AutomationElement> FindAll(Automation::AutomationElement parent, int timeout);
 
         /// <summary>
         /// Find first element with this strategy starting with given element.
@@ -140,6 +142,6 @@ namespace Winium.Cruciatus.Core
         /// <param name="parent">Starting element.</param>
         /// <param name="timeout">Search time threshold.</param>
         /// <returns>Found element (may be null).</returns>
-        public abstract AutomationElement FindFirst(AutomationElement parent, int timeout);
+        public abstract Automation::AutomationElement FindFirst(Automation::AutomationElement parent, int timeout);
     }
 }

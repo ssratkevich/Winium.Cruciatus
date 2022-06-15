@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Exceptions;

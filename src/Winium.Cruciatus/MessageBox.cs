@@ -1,10 +1,12 @@
-﻿using System;
+﻿extern alias UIAComWrapper;
+using Interop.UIAutomationClient;
+using System;
 using System.Windows;
-using System.Windows.Automation;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Helpers;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus
 {
@@ -37,8 +39,8 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("dialogWindow");
             }
 
-            var condition = new PropertyCondition(WindowPattern.IsModalProperty, true);
-            var modalwindow = AutomationElementHelper.FindFirst(dialogWindow.Element, TreeScope.Children, condition);
+            var condition = new Automation::PropertyCondition(Automation::WindowPattern.IsModalProperty, true);
+            var modalwindow = AutomationElementHelper.FindFirst(dialogWindow.Element, TreeScope.TreeScope_Children, condition);
             if (modalwindow == null)
             {
                 throw new CruciatusException("NOT CLICK BUTTON");

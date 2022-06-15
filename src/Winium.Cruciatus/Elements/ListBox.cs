@@ -1,6 +1,8 @@
-﻿using System.Windows.Automation;
+extern alias UIAComWrapper;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Extensions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Elements
 {
@@ -45,14 +47,14 @@ namespace Winium.Cruciatus.Elements
             {
                 Logger.Error("Element '{0}' not enabled. Scroll failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
-                throw new ElementNotEnabledException("NOT SCROLL");
+                throw new Automation::ElementNotEnabledException("NOT SCROLL");
             }
 
-            var scrollPattern = this.Element.GetCurrentPattern(ScrollPattern.Pattern) as ScrollPattern;
+            var scrollPattern = this.Element.GetCurrentPattern(Automation::ScrollPattern.Pattern) as Automation::ScrollPattern;
             if (scrollPattern == null)
             {
                 Logger.Debug("{0} does not support ScrollPattern.", this);
-                throw new ElementNotEnabledException("NOT SCROLL");
+                throw new Automation::ElementNotEnabledException("NOT SCROLL");
             }
 
             // Стартовый поиск элемента
@@ -64,7 +66,7 @@ namespace Winium.Cruciatus.Elements
                 // Установка самого верхнего положения прокрутки
                 while (scrollPattern.Current.VerticalScrollPercent > 0.1)
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.LargeDecrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_LargeDecrement);
                 }
 
                 // Установка самого левого положения прокрутки (при возможности)
@@ -72,14 +74,14 @@ namespace Winium.Cruciatus.Elements
                 {
                     while (scrollPattern.Current.HorizontalScrollPercent > 0.1)
                     {
-                        scrollPattern.ScrollHorizontal(ScrollAmount.LargeDecrement);
+                        scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_LargeDecrement);
                     }
                 }
 
                 // Основная вертикальная прокрутка
                 while (element == null && scrollPattern.Current.VerticalScrollPercent < 99.9)
                 {
-                    scrollPattern.ScrollVertical(ScrollAmount.LargeIncrement);
+                    scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_LargeIncrement);
                     element = CruciatusCommand.FindFirst(this, getStrategy, 1000);
                 }
             }
@@ -93,25 +95,25 @@ namespace Winium.Cruciatus.Elements
             // Если точка клика элемента под границей списка - докручиваем по вертикали вниз
             while (element.Element.IsClickablePointLower(this.Element, scrollPattern))
             {
-                scrollPattern.ScrollVertical(ScrollAmount.SmallIncrement);
+                scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_SmallIncrement);
             }
 
             // Если точка клика элемента над границей списка - докручиваем по вертикали вверх
             while (element.Element.IsClickablePointUpper(this.Element))
             {
-                scrollPattern.ScrollVertical(ScrollAmount.SmallDecrement);
+                scrollPattern.ScrollVertical(ScrollAmount.ScrollAmount_SmallDecrement);
             }
 
             // Если точка клика элемента справа от границы списка - докручиваем по горизонтали вправо
             while (element.Element.IsClickablePointOnRight(this.Element, scrollPattern))
             {
-                scrollPattern.ScrollHorizontal(ScrollAmount.SmallIncrement);
+                scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_SmallIncrement);
             }
 
             // Если точка клика элемента слева от границы списка - докручиваем по горизонтали влево
             while (element.Element.IsClickablePointOnLeft(this.Element))
             {
-                scrollPattern.ScrollHorizontal(ScrollAmount.SmallDecrement);
+                scrollPattern.ScrollHorizontal(ScrollAmount.ScrollAmount_SmallDecrement);
             }
 
             return element;

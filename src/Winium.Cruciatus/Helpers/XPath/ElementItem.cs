@@ -1,10 +1,11 @@
-﻿using System;
+﻿extern alias UIAComWrapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Automation;
 using System.Xml.XPath;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Exceptions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Helpers.XPath
 {
@@ -15,11 +16,11 @@ namespace Winium.Cruciatus.Helpers.XPath
     {
         #region Fields
 
-        private readonly AutomationElement element;
+        private readonly Automation::AutomationElement element;
 
-        private readonly TreeWalker treeWalker = TreeWalker.ControlViewWalker;
+        private readonly Automation::TreeWalker treeWalker = Automation::TreeWalker.ControlViewWalker;
 
-        private List<AutomationProperty> properties;
+        private List<Automation::AutomationProperty> properties;
 
         #endregion
 
@@ -30,7 +31,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="element">Automation element.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public ElementItem(AutomationElement element)
+        public ElementItem(Automation::AutomationElement element)
         {
             if (element == null)
             {
@@ -82,7 +83,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// <summary>
         /// Supported properties.
         /// </summary>
-        public List<AutomationProperty> SupportedProperties =>
+        public List<Automation::AutomationProperty> SupportedProperties =>
             this.properties ??= this.element.GetSupportedProperties().ToList();
             
         #endregion
@@ -94,8 +95,8 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="instance">Automation element.</param>
         /// <returns></returns>
-        public static XPathItem Create(AutomationElement instance) =>
-            instance.Equals(AutomationElement.RootElement)
+        public static XPathItem Create(Automation::AutomationElement instance) =>
+            instance.Equals(Automation::AutomationElement.RootElement)
             ? new RootItem()
             : new ElementItem(instance);
 
@@ -104,7 +105,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="property">Property.</param>
         /// <returns>Next property if it exists.</returns>
-        public AutomationProperty GetNextPropertyOrNull(AutomationProperty property)
+        public Automation::AutomationProperty GetNextPropertyOrNull(Automation::AutomationProperty property)
         {
             var index = this.SupportedProperties.IndexOf(property);
             return this.SupportedProperties.ElementAtOrDefault(index + 1);
@@ -115,7 +116,7 @@ namespace Winium.Cruciatus.Helpers.XPath
         /// </summary>
         /// <param name="property">Property.</param>
         /// <returns>Value of the property.</returns>
-        public object GetPropertyValue(AutomationProperty property) =>
+        public object GetPropertyValue(Automation::AutomationProperty property) =>
             this.element.GetCurrentPropertyValue(property);
 
         /// <inheritdoc/>

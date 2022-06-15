@@ -1,6 +1,8 @@
-﻿using System.Windows.Automation;
+﻿extern alias UIAComWrapper;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Extensions;
+using Interop.UIAutomationClient;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Elements
 {
@@ -39,7 +41,7 @@ namespace Winium.Cruciatus.Elements
         /// Actually must be bool? (null for intermediate state).
         /// </summary>
         public bool IsToggleOn =>
-            this.ToggleState == ToggleState.On;
+            this.ToggleState == ToggleState.ToggleState_On;
 
         #endregion
 
@@ -49,7 +51,7 @@ namespace Winium.Cruciatus.Elements
         /// Toggle state.
         /// </summary>
         internal ToggleState ToggleState =>
-            this.GetAutomationPropertyValue<ToggleState>(TogglePattern.ToggleStateProperty);
+            this.GetAutomationPropertyValue<ToggleState>(Automation::TogglePattern.ToggleStateProperty);
 
         #endregion
 

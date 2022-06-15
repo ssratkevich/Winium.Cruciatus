@@ -1,4 +1,4 @@
-﻿using System.Windows.Automation;
+using Interop.UIAutomationClient;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Extensions;
 
@@ -38,14 +38,14 @@ namespace Winium.Cruciatus.Elements
         /// Gets Cancel button.
         /// </summary>
         public CruciatusElement CancelButton =>
-            this.FindElement(By.Uid(TreeScope.Children,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Children,
                 CruciatusFactory.Settings.OpenFileDialogUid.CancelButton));
 
         /// <summary>
         /// Gets file name combobox.
         /// </summary>
         public ComboBox FileNameComboBox =>
-            this.FindElement(By.Uid(TreeScope.Children,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Children,
                 CruciatusFactory.Settings.OpenFileDialogUid.FileNameEditableComboBox))
             .ToComboBox();
 
@@ -53,7 +53,7 @@ namespace Winium.Cruciatus.Elements
         /// Gets Open button.
         /// </summary>
         public CruciatusElement OpenButton =>
-            this.FindElement(By.Uid(TreeScope.Children,
+            this.FindElement(By.Uid(TreeScope.TreeScope_Children,
                 CruciatusFactory.Settings.OpenFileDialogUid.OpenButton));
 
         #endregion

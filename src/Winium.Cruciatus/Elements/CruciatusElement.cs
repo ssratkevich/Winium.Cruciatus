@@ -1,10 +1,12 @@
-﻿using System;
+﻿extern alias UIAComWrapper;
+using System;
 using System.Collections.Generic;
-using System.Windows.Automation;
+using Interop.UIAutomationClient;
 using NLog;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Exceptions;
 using Winium.Cruciatus.Extensions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Elements
 {
@@ -24,7 +26,7 @@ namespace Winium.Cruciatus.Elements
 
         #region Fields
 
-        private AutomationElement element;
+        private Automation::AutomationElement element;
 
         #endregion
 
@@ -74,13 +76,16 @@ namespace Winium.Cruciatus.Elements
         /// <param name="element">Wrapped automation element.</param>
         /// <param name="parent">Parent element.</param>
         /// <param name="searchStrategy">Element search strategy.</param>
-        private CruciatusElement(AutomationElement element, CruciatusElement parent, By searchStrategy)
+        private CruciatusElement(Automation::AutomationElement element, CruciatusElement parent, By searchStrategy)
         {
             if (element == null && (parent == null || searchStrategy == null))
             {
                 throw new InvalidOperationException($"Invalid operation. Either {nameof(element)} or {nameof(parent)} and {nameof(searchStrategy)} must be provided.");
             }
-            this.Element = element;
+            this.element = element;
+            // this is for Automation inicialization.
+            this.EnshureAutomationInitialized();
+
             this.Parent = parent;
             this.SearchStrategy = searchStrategy;
         }
@@ -102,7 +107,7 @@ namespace Winium.Cruciatus.Elements
         /// <summary>
         /// Automation element.
         /// </summary>
-        public AutomationElement Element
+        public Automation::AutomationElement Element
         {
             get
             {
@@ -112,6 +117,8 @@ namespace Winium.Cruciatus.Elements
                 {
                     var element = this.Parent.FindElement(this.SearchStrategy);
                     this.element = element != null ? element.Element : null;
+                    // this is for Automation inicialization.
+                    this.EnshureAutomationInitialized();
                 }
 
                 if (this.element == null)
@@ -137,14 +144,14 @@ namespace Winium.Cruciatus.Elements
             {
                 try
                 {
-                    this.Element.GetCurrentPropertyValue(AutomationElement.AutomationIdProperty);
+                    this.Element.GetCurrentPropertyValue(Automation::AutomationElement.AutomationIdProperty);
                     return false;
                 }
                 catch (NoSuchElementException)
                 {
                     return true;
                 }
-                catch (ElementNotAvailableException)
+                catch (Automation::ElementNotAvailableException)
                 {
                     return true;
                 }
@@ -170,7 +177,7 @@ namespace Winium.Cruciatus.Elements
         /// <returns>
         /// Created element.
         /// </returns>
-        public static CruciatusElement Create(AutomationElement element, CruciatusElement parent, By searchStrategy) =>
+        public static CruciatusElement Create(Automation::AutomationElement element, CruciatusElement parent, By searchStrategy) =>
             new CruciatusElement(element, parent, searchStrategy);
 
         /// <summary>
@@ -218,7 +225,7 @@ namespace Winium.Cruciatus.Elements
             {
                 Logger.Error("Element '{0}' not enabled. Click failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
-                throw new ElementNotEnabledException("NOT CLICK");
+                throw new Automation::ElementNotEnabledException("NOT CLICK");
             }
 
             if (strategy == ClickStrategies.None)
@@ -357,15 +364,15 @@ namespace Winium.Cruciatus.Elements
             {
                 Logger.Error("Element '{0}' not enabled. Set focus failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
-                throw new ElementNotEnabledException("NOT SET FOCUS");
+                throw new Automation::ElementNotEnabledException("NOT SET FOCUS");
             }
 
-            if (this.Element.Current.ControlType.Equals(ControlType.Window))
+            if (this.Element.Current.ControlType.Equals(Automation::ControlType.Window))
             {
                 object windowPatternObject;
-                if (this.Element.TryGetCurrentPattern(WindowPattern.Pattern, out windowPatternObject))
+                if (this.Element.TryGetCurrentPattern(Automation::WindowPattern.Pattern, out windowPatternObject))
                 {
-                    ((WindowPattern)windowPatternObject).SetWindowVisualState(WindowVisualState.Normal);
+                    ((Automation::WindowPattern)windowPatternObject).SetWindowVisualState(WindowVisualState.WindowVisualState_Normal);
                     return;
                 }
             }
@@ -394,7 +401,7 @@ namespace Winium.Cruciatus.Elements
             {
                 Logger.Error("Element '{0}' not enabled. Set text failed.", this.ToString());
                 CruciatusFactory.Screenshoter.AutomaticScreenshotCaptureIfNeeded();
-                throw new ElementNotEnabledException("NOT SET TEXT");
+                throw new Automation::ElementNotEnabledException("NOT SET TEXT");
             }
 
             this.Click(MouseButton.Left, ClickStrategies.ClickablePoint | ClickStrategies.BoundingRectangleCenter);
@@ -457,6 +464,19 @@ namespace Winium.Cruciatus.Elements
                 string.IsNullOrEmpty(uid) ? string.Empty : ", uid: " + uid, 
                 string.IsNullOrEmpty(name) ? string.Empty : ", name: " + name);
             return str;
+        }
+
+        /// <summary>
+        /// Magic method to ensure Automation initialized within UIAComWrapper.
+        /// </summary>
+        public void EnshureAutomationInitialized()
+        {
+            try
+            {
+                _ = this.element?.Current.Name;
+            }
+            catch(Exception)
+            { }
         }
 
         #endregion

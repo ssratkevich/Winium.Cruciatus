@@ -17,14 +17,12 @@ namespace Winium.Cruciatus.Helpers
             var sX = point.X;
             var sY = point.Y;
 
-            var virtualScreenLeft = SystemParameters.VirtualScreenLeft;
-            if (virtualScreenLeft < 0)
-            {
-                sX -= virtualScreenLeft;
-            }
+            var virtualScreen = System.Windows.Forms.SystemInformation.VirtualScreen;
+            sX -= virtualScreen.Left;
+            sY -= virtualScreen.Top;
 
-            var vsX = sX * (VirtualScreenLowerRightCorner.X / SystemParameters.VirtualScreenWidth);
-            var vsY = sY * (VirtualScreenLowerRightCorner.Y / SystemParameters.VirtualScreenHeight);
+            var vsX = sX * (VirtualScreenLowerRightCorner.X / virtualScreen.Width);
+            var vsY = sY * (VirtualScreenLowerRightCorner.Y / virtualScreen.Height);
 
             return new Point(vsX, vsY);
         }

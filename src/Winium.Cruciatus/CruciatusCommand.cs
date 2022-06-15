@@ -1,13 +1,13 @@
-﻿using System;
+﻿extern alias UIAComWrapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Automation;
 using NLog;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Extensions;
 using Winium.Cruciatus.Helpers;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus
 {
@@ -65,8 +65,7 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            Point point;
-            if (!AutomationElementHelper.TryGetBoundingRectangleCenter(element.Element, out point))
+            if (!AutomationElementHelper.TryGetBoundingRectangleCenter(element.Element, out var point))
             {
                 Logger.Debug("Element '{0}' have empty BoundingRectangle", element);
                 return false;
@@ -130,7 +129,7 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            var invokePattern = element.Element.TryGetPattern<InvokePattern>(InvokePattern.Pattern);
+            var invokePattern = element.Element.TryGetPattern<Automation::InvokePattern>(Automation::InvokePattern.Pattern);
             if (invokePattern != null)
             {
                 string cmd;
@@ -161,7 +160,7 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            var textPattern = element.Element.TryGetPattern<TextPattern>(TextPattern.Pattern);
+            var textPattern = element.Element.TryGetPattern<Automation::TextPattern>(Automation::TextPattern.Pattern);
             if (textPattern != null)
             {
                 text = textPattern.DocumentRange.GetText(-1);
@@ -181,7 +180,7 @@ namespace Winium.Cruciatus
                 throw new ArgumentNullException("element");
             }
 
-            var valuePattern = element.Element.TryGetPattern<ValuePattern>(ValuePattern.Pattern);
+            var valuePattern = element.Element.TryGetPattern<Automation::ValuePattern>(Automation::ValuePattern.Pattern);
             if (valuePattern != null)
             {
                 Logger.Info("Element '{0}' return text with use ValuePattern", element);

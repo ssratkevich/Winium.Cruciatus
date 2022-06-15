@@ -12,7 +12,7 @@
 
   <PropertyGroup>
     <PackageId>Syntellect.Winium.Cruciatus</PackageId>
-    <Version>3.0.0.0</Version>
+    <Version>3.0.1.0</Version>
     <Title>Winium.Cruciatus</Title>
     <Description>C# Framework for Windows applications automated testing.</Description>
     <Product>Winium.Cruciatus automation helper C# library.</Product>
@@ -24,6 +24,8 @@
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageIcon>LogoSmall.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -43,6 +45,9 @@
       <Version>4.7.15</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+    <PackageReference Include="UIAComWrapperNetstandard" Version="1.0.1">
+      <Aliases>UIAComWrapper</Aliases>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LogoSmall.png">

@@ -1,10 +1,10 @@
-﻿using System;
+extern alias UIAComWrapper;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows.Automation;
 using WindowsInput;
 using Winium.Cruciatus.Elements;
 using Winium.Cruciatus.Exceptions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Extensions
 {
@@ -38,8 +38,8 @@ namespace Winium.Cruciatus.Extensions
         /// <param name="property">Target property.</param>
         /// <returns>Property value.</returns>
         public static TOut GetAutomationPropertyValue<TOut>(
-            this CruciatusElement cruciatusElement, 
-            AutomationProperty property)
+            this CruciatusElement cruciatusElement,
+            Automation::AutomationProperty property)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace Winium.Cruciatus.Extensions
         /// <param name="pattern">Required automation pattern (ex: ExpandCollapsePattern.Pattern).</param>
         /// <typeparam name="T">Pattern type.</typeparam>
         /// <returns>Automation pattern.</returns>
-        public static T GetPattern<T>(this CruciatusElement element, AutomationPattern pattern) where T : class =>
+        public static T GetPattern<T>(this CruciatusElement element, Automation::AutomationPattern pattern) where T : class =>
             element.Element.GetPattern<T>(pattern);
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Winium.Cruciatus.Extensions
         /// <param name="pattern">Required automation pattern (ex: ExpandCollapsePattern.Pattern).</param>
         /// <typeparam name="T">Pattern type.</typeparam>
         /// <returns>Automation pattern or null, if element not support pattern.</returns>
-        public static T TryGetPattern<T>(this CruciatusElement element, AutomationPattern pattern) where T : class =>
+        public static T TryGetPattern<T>(this CruciatusElement element, Automation::AutomationPattern pattern) where T : class =>
             element.Element.TryGetPattern<T>(pattern);
 
         /// <summary>

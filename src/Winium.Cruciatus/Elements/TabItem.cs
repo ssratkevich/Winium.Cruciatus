@@ -1,6 +1,7 @@
-﻿using System.Windows.Automation;
+extern alias UIAComWrapper;
 using Winium.Cruciatus.Core;
 using Winium.Cruciatus.Extensions;
+using Automation = UIAComWrapper::System.Windows.Automation;
 
 namespace Winium.Cruciatus.Elements
 {
@@ -29,7 +30,7 @@ namespace Winium.Cruciatus.Elements
         /// Is tab selected.
         /// </summary>
         public bool IsSelection =>
-            this.GetAutomationPropertyValue<bool>(SelectionItemPattern.IsSelectedProperty);
+            this.GetAutomationPropertyValue<bool>(Automation::SelectionItemPattern.IsSelectedProperty);
 
         #endregion
 

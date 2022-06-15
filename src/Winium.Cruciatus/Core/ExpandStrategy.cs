@@ -1,4 +1,4 @@
-﻿namespace Winium.Cruciatus.Core
+namespace Winium.Cruciatus.Core
 {
     /// <summary>
     /// Expanding element supported strategies.

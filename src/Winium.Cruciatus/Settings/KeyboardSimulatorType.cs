@@ -1,4 +1,4 @@
-﻿namespace Winium.Cruciatus.Settings
+namespace Winium.Cruciatus.Settings
 {
     /// <summary>
     /// Supported keyboard simulators.
